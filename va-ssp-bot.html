@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Van Ameyde SSP Assistant</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy: #07017E;
+  --turquoise: #00D8B9;
+  --misty-rose: #E5D3D1;
+  --black: #000000;
+  --white: #FFFFFF;
+  --gray-light: #f4f4f6;
+  --gray-mid: #ccc;
+}
+
+html, body {
+  height: 100%;
+  font-family: Verdana, Geneva, sans-serif;
+  color: var(--black);
+  background: var(--gray-light);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 780px;
+  margin: 0 auto;
+  background: var(--white);
+  box-shadow: 0 0 24px rgba(0,0,0,0.08);
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--navy);
+  color: var(--white);
+  padding: 14px 20px;
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--turquoise);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--navy);
+}
+
+.header-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.header-title span {
+  color: var(--turquoise);
+  margin-left: 6px;
+  font-size: 14px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+#new-request-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.4);
+  color: var(--white);
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#new-request-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* API Key bar */
+#api-key-bar {
+  padding: 10px 20px;
+  background: var(--misty-rose);
+  border-bottom: 1px solid var(--gray-mid);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+#api-key-bar.collapsed {
+  padding: 6px 20px;
+}
+
+#api-key-bar label {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+#api-key-input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid var(--gray-mid);
+  border-radius: 4px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 13px;
+}
+
+#api-key-save {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  padding: 7px 16px;
+  border-radius: 4px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+#api-key-save:hover {
+  opacity: 0.9;
+}
+
+.api-key-status {
+  font-size: 12px;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.api-key-status:hover {
+  text-decoration: underline;
+}
+
+/* Chat area */
+#chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  word-wrap: break-word;
+}
+
+.message.bot {
+  align-self: flex-start;
+  background: var(--navy);
+  color: var(--white);
+  border-bottom-left-radius: 4px;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: var(--turquoise);
+  color: var(--black);
+  border-bottom-right-radius: 4px;
+}
+
+.message.error {
+  align-self: flex-start;
+  background: #fce4e4;
+  color: #a00;
+  border: 1px solid #f5bcbc;
+  border-bottom-left-radius: 4px;
+}
+
+/* CTA Card */
+.cta-card {
+  align-self: flex-start;
+  max-width: 80%;
+  background: var(--white);
+  border: 2px solid var(--navy);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cta-card .cta-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  color: var(--navy);
+  font-weight: bold;
+}
+
+.cta-card .cta-desc {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.45;
+}
+
+.cta-card .cta-btn {
+  display: inline-block;
+  margin-top: 6px;
+  background: var(--navy);
+  color: var(--white);
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.cta-card .cta-btn:hover {
+  opacity: 0.88;
+}
+
+.cta-card .start-over {
+  font-size: 12px;
+  color: var(--navy);
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font-family: Verdana, Geneva, sans-serif;
+  margin-top: 4px;
+  padding: 0;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  align-self: flex-start;
+  display: flex;
+  gap: 5px;
+  padding: 12px 18px;
+  background: var(--navy);
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: typing-bounce 1.2s infinite;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Input bar */
+#input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #e0e0e0;
+  background: var(--white);
+  flex-shrink: 0;
+}
+
+#user-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--gray-mid);
+  border-radius: 8px;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 14px;
+  resize: none;
+  min-height: 42px;
+  max-height: 120px;
+  line-height: 1.4;
+}
+
+#user-input:focus {
+  outline: none;
+  border-color: var(--navy);
+}
+
+#send-btn {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  width: 44px;
+  height: 42px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+
+#send-btn:hover {
+  opacity: 0.88;
+}
+
+#send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .message { max-width: 90%; }
+  .cta-card { max-width: 90%; }
+  header { padding: 10px 14px; }
+  #chat-area { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="logo-icon" aria-hidden="true">VA</div>
+      <div class="header-title">Van Ameyde Systems<span>| SSP Assistant</span></div>
+    </div>
+    <button id="new-request-btn" aria-label="Start a new request">New request</button>
+  </header>
+
+  <div id="api-key-bar">
+    <label for="api-key-input">API Key:</label>
+    <input type="password" id="api-key-input" placeholder="Enter your Anthropic API key" autocomplete="off" />
+    <button id="api-key-save" aria-label="Save API key">Connect</button>
+  </div>
+
+  <div id="chat-area" role="log" aria-live="polite"></div>
+
+  <div id="input-bar">
+    <textarea id="user-input" rows="1" placeholder="Describe what you need help with..." aria-label="Type your message"></textarea>
+    <button id="send-btn" aria-label="Send message" disabled>&#9654;</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+  const MODEL = 'claude-sonnet-4-20250514';
+  const SYSTEM_PROMPT = `You are the Van Ameyde SSP Assistant, a helpful routing bot for Van Ameyde employees.
+Your sole purpose is to understand what the employee needs and route them to the correct Self-Service Portal (SSP) form.
+
+RULES:
+1. Ask concise, friendly clarifying questions to understand the request. Never assume.
+2. Once confident, respond with a JSON block (and nothing else after it) in this format:
+
+{"route": true, "form_name": "...", "url": "...", "description": "..."}
+
+3. If the user's request is truly ambiguous even after 2 clarifying questions, offer them the general SSP portal link as a fallback.
+4. Always address users warmly. Use "you" and keep language simple and clear.
+5. Never use dashes; use semicolons or commas instead.
+6. If a form is restricted (ECHO users only), warn the user before routing.
+7. Do not answer questions unrelated to IT service requests. Politely redirect.
+
+AVAILABLE FORMS (use these URLs exactly):
+
+--- GENERAL ---
+- Report an Incident (something is broken/not working)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f
+
+- Ask a Question (general IT question, not an incident)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
+
+- General Self-Service Portal (browse all forms)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/
+
+--- ACCESS & SOFTWARE ---
+- Request Access to Existing Software (file server, Foxit, DocuSign, printers, Office language packs)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b
+
+- Request New Software (software not yet in use at Van Ameyde)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d51bd395eb24961810fdedc5f7947d3
+
+- Disable Van Ameyde Account (offboarding, account removal)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b
+
+--- COMMUNICATION & COLLABORATION ---
+- Email / Mailbox / Distribution List (new shared mailbox or mailing list; modify or delete existing)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f654f9fbb9124c439314e584b051e731
+
+- SharePoint (request access or changes to a SharePoint location)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e22b5714210042f2b848adfd752224fa
+
+- A/V Configuration (audio/visual meeting room setup)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
+
+- Cloudya (telephony; new account or configuration changes)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
+
+--- HARDWARE & DEVICES ---
+- Order Hardware (new hardware; shipping costs charged; Restricted: authorized users only)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7abd523c57f44959b8ae4286e8ae86d5
+
+- Device Allocation & Decommissioning (assign or decommission a device; Restricted: authorized users only)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70aaef22a8284beda3701650351983a2
+
+--- INFRASTRUCTURE ---
+- Infrastructure Consultancy (cloud, server, storage, network advice or changes)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60
+
+- Network Configuration (VPN, firewall, network setup)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60
+
+--- IMS / FNOL (Restricted: Authorized ECHO Users Only) ---
+- IMS/FNOL Access Request
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2ea0f904d85243469c390ee4c8e77293
+
+- IMS/FNOL Configuration Change
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f75d042ed894468810f407b5f823648
+
+- IMS/FNOL Document Template (new or modified document templates)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=eee1d11b36394599b457417efbb246cc
+
+--- MyClaim (Restricted: Authorized ECHO Users Only) ---
+- MyClaim Access Request
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c658cd5f74543f2b43d1119792bb942
+
+- MyClaim Configuration Change
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0d38f6fbece544328c753bda3a3e8d38
+
+--- ECHO R1 (Restricted: Authorized ECHO Users Only) ---
+- ECHO Client/CA/CT Configuration (configure clients, claim administrators, claim types)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3ca18c0472f34b958bf02610aa3fdea9
+
+- ECHO Calamity Code (calamity code setup or changes)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=221956cc3cfc4ea4865082e3f169c212
+
+- ECHO Document Template (new or modified document templates)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=54c5ce89788645ec827df389d5b388e1
+
+- ECHO Re-assign Files / Access Request (reassign files to different handlers)
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70311135e86c4be59e3b42b2c2193300
+
+- ECHO Release Party from Sanction-list
+  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=13c4b3a1a86e43f292adc6d2b94068ad`;
+
+  const GENERAL_SSP_URL = 'https://vanameyde.topdesk.net/tas/public/ssp/';
+  const WELCOME_MESSAGE = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form.";
+
+  let apiKey = '';
+  let conversationHistory = [];
+  let turnCount = 0;
+  let isWaiting = false;
+
+  // DOM elements
+  const chatArea = document.getElementById('chat-area');
+  const userInput = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+  const apiKeyBar = document.getElementById('api-key-bar');
+  const apiKeyInput = document.getElementById('api-key-input');
+  const apiKeySave = document.getElementById('api-key-save');
+  const newRequestBtn = document.getElementById('new-request-btn');
+
+  // Initialize
+  addBotMessage(WELCOME_MESSAGE);
+  updateSendState();
+
+  // API key handling
+  apiKeySave.addEventListener('click', saveApiKey);
+  apiKeyInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); saveApiKey(); }
+  });
+
+  function saveApiKey() {
+    const key = apiKeyInput.value.trim();
+    if (!key) return;
+    apiKey = key;
+    apiKeyBar.classList.add('collapsed');
+    apiKeyBar.innerHTML = '<span class="api-key-status" tabindex="0" role="button" aria-label="Change API key">API key set. Click to change.</span>';
+    apiKeyBar.querySelector('.api-key-status').addEventListener('click', resetApiKeyBar);
+    updateSendState();
+    userInput.focus();
+  }
+
+  function resetApiKeyBar() {
+    apiKey = '';
+    apiKeyBar.classList.remove('collapsed');
+    apiKeyBar.innerHTML = '<label for="api-key-input">API Key:</label><input type="password" id="api-key-input" placeholder="Enter your Anthropic API key" autocomplete="off" /><button id="api-key-save" aria-label="Save API key">Connect</button>';
+    const newInput = document.getElementById('api-key-input');
+    const newSave = document.getElementById('api-key-save');
+    newInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveApiKey(); }
+    });
+    newSave.addEventListener('click', saveApiKey);
+    updateSendState();
+  }
+
+  // Send handling
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  userInput.addEventListener('input', function () {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    updateSendState();
+  });
+
+  newRequestBtn.addEventListener('click', resetConversation);
+
+  function updateSendState() {
+    sendBtn.disabled = !apiKey || !userInput.value.trim() || isWaiting;
+  }
+
+  function resetConversation() {
+    conversationHistory = [];
+    turnCount = 0;
+    isWaiting = false;
+    chatArea.innerHTML = '';
+    addBotMessage(WELCOME_MESSAGE);
+    userInput.value = '';
+    userInput.style.height = 'auto';
+    updateSendState();
+    userInput.focus();
+  }
+
+  // Message rendering
+  function addBotMessage(text) {
+    const div = document.createElement('div');
+    div.className = 'message bot';
+    div.textContent = text;
+    chatArea.appendChild(div);
+    scrollToBottom();
+  }
+
+  function addUserMessage(text) {
+    const div = document.createElement('div');
+    div.className = 'message user';
+    div.textContent = text;
+    chatArea.appendChild(div);
+    scrollToBottom();
+  }
+
+  function addErrorMessage(text) {
+    const div = document.createElement('div');
+    div.className = 'message error';
+    div.textContent = text;
+    chatArea.appendChild(div);
+    // Also show general SSP fallback
+    addCtaCard('General Self-Service Portal', 'Browse all available forms on the SSP portal.', GENERAL_SSP_URL);
+    scrollToBottom();
+  }
+
+  function addCtaCard(formName, description, url) {
+    const card = document.createElement('div');
+    card.className = 'cta-card';
+    card.innerHTML = '<div class="cta-title">\uD83D\uDD17 ' + escapeHtml(formName) + '</div>' +
+      '<div class="cta-desc">' + escapeHtml(description) + '</div>' +
+      '<a class="cta-btn" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" aria-label="Open ' + escapeHtml(formName) + ' form">OPEN FORM \u2192</a>' +
+      '<button class="start-over" aria-label="Start a new request">Start over</button>';
+    chatArea.appendChild(card);
+    card.querySelector('.start-over').addEventListener('click', resetConversation);
+    scrollToBottom();
+  }
+
+  function showTypingIndicator() {
+    const div = document.createElement('div');
+    div.className = 'typing-indicator';
+    div.id = 'typing-indicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    chatArea.appendChild(div);
+    scrollToBottom();
+  }
+
+  function removeTypingIndicator() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+  }
+
+  function scrollToBottom() {
+    requestAnimationFrame(function () {
+      chatArea.scrollTop = chatArea.scrollHeight;
+    });
+  }
+
+  function escapeHtml(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // Parse route JSON from response
+  function parseRouteJson(text) {
+    var regex = /\{[\s\S]*?"route"\s*:\s*true[\s\S]*?\}/;
+    var match = text.match(regex);
+    if (!match) return null;
+    try {
+      var parsed = JSON.parse(match[0]);
+      if (parsed.route === true && parsed.form_name && parsed.url) {
+        return {
+          json: parsed,
+          textBefore: text.substring(0, match.index).trim(),
+          textAfter: text.substring(match.index + match[0].length).trim()
+        };
+      }
+    } catch (e) {
+      // not valid JSON
+    }
+    return null;
+  }
+
+  // API call
+  async function sendMessage() {
+    var text = userInput.value.trim();
+    if (!text || !apiKey || isWaiting) return;
+
+    addUserMessage(text);
+    conversationHistory.push({ role: 'user', content: text });
+    turnCount++;
+
+    userInput.value = '';
+    userInput.style.height = 'auto';
+    isWaiting = true;
+    updateSendState();
+    showTypingIndicator();
+
+    try {
+      var response = await fetch(ANTHROPIC_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: 1024,
+          system: SYSTEM_PROMPT,
+          messages: conversationHistory
+        })
+      });
+
+      removeTypingIndicator();
+
+      if (!response.ok) {
+        var errBody = '';
+        try { errBody = await response.text(); } catch (ignored) {}
+        throw new Error('API error (' + response.status + '): ' + (errBody || response.statusText));
+      }
+
+      var data = await response.json();
+      var assistantText = '';
+      if (data.content && data.content.length > 0) {
+        assistantText = data.content.map(function (b) { return b.text || ''; }).join('');
+      }
+
+      conversationHistory.push({ role: 'assistant', content: assistantText });
+
+      // Check for route JSON
+      var routeData = parseRouteJson(assistantText);
+      if (routeData) {
+        if (routeData.textBefore) {
+          addBotMessage(routeData.textBefore);
+        }
+        addCtaCard(routeData.json.form_name, routeData.json.description || '', routeData.json.url);
+      } else {
+        addBotMessage(assistantText);
+
+        // Fallback after 3 user turns without routing
+        if (turnCount >= 3) {
+          addBotMessage("It seems we haven't pinpointed the right form yet. Here's the general SSP portal where you can browse all available forms.");
+          addCtaCard('General Self-Service Portal', 'Browse all available forms on the SSP portal.', GENERAL_SSP_URL);
+          conversationHistory.push({
+            role: 'assistant',
+            content: "It seems we haven't pinpointed the right form yet. Here's the general SSP portal where you can browse all available forms."
+          });
+        }
+      }
+    } catch (err) {
+      removeTypingIndicator();
+      addErrorMessage('Something went wrong: ' + err.message + '. You can try the general SSP portal below.');
+    }
+
+    isWaiting = false;
+    updateSendState();
+    userInput.focus();
+  }
+})();
+</script>
+</body>
+</html>
