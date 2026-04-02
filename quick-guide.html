@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #27367D; color: white; padding: 20px; font-size: 24px; font-weight: bold; }
+        .subheader { background: #1DC6B3; color: white; padding: 10px 20px; font-size: 18px; }
+        .section-divider { background: #07017E; color: white; padding: 12px 20px; font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
+        .section-divider-desc { background: #07017E; color: rgba(255,255,255,0.75); padding: 4px 20px 12px 20px; font-size: 13px; font-weight: normal; }
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .section { margin-bottom: 20px; }
+        .section-header { background: #27367D; color: white; padding: 12px 20px; border-radius: 4px; font-size: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .header-labels { display: flex; gap: 15px; align-items: center; }
+        .malfunction-btn { background: transparent; border: 1px solid white; color: white; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; text-decoration: none; }
+        .malfunction-btn:hover { background: rgba(255,255,255,0.1); }
+        .generic-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; background: #f8f9fa; }
+        .generic-button { background: white; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.2s ease; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
+        .generic-button:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .generic-button-title { color: #27367D; font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .generic-button-description { color: #666; margin-bottom: 15px; line-height: 1.4; }
+        .generic-button-action { background: #1DC6B3; color: white; padding: 8px 24px; border-radius: 4px; font-weight: bold; margin-top: auto; }
+        .generic-button-action:hover { background: #19b3a2; }
+        .section-content { background: #f8f9fa; padding: 20px; border-radius: 4px; border-left: 4px solid #1DC6B3; }
+        .subsection-header { color: #27367D; font-weight: bold; margin-bottom: 8px; font-size: 16px; }
+        ul { margin: 0; padding-left: 20px; list-style-type: none; }
+        li { margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        a { color: #1DC6B3; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        .popup-link { color: #1DC6B3; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .popup-link:hover { text-decoration: underline; }
+        .footer { background: #27367D; color: white; padding: 20px; margin-top: 20px; }
+        .footer h3 { margin-top: 0; color: #1DC6B3; }
+        .footer a { color: #1DC6B3; }
+        .footer ul li { display: list-item; }
+        @media (max-width: 768px) { .grid-container { grid-template-columns: 1fr; } .generic-buttons { grid-template-columns: 1fr; } .container { margin: 10px; } }
+    </style>
+    <script>
+        function openInPopup(url) {
+            window.open(url, '_blank', 'width=1000,height=800,scrollbars=yes');
+            return false;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="header">Self-Service Portal Quick Guide</div>
+    <div class="subheader">Which Form Do I Need?</div>
+
+    <!-- ====== OFFICE IT ====== -->
+    <div class="section-divider">&#128421; My Workplace Support</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning the Van Ameyde account, device, software, or network.</div>
+    <div class="generic-buttons">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a problem</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report an incident</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a question</div>
+            <div class="generic-button-description">Ask our support team and we will get back to you.</div>
+            <div class="generic-button-action">Ask a question</div>
+        </a>
+    </div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>Access &amp; Software</div></div>
+                <div class="section-content">
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b" onclick="return openInPopup(this.href);" class="popup-link">Request Access to Existing Software</a><p style="font-size:12px;color:#666;margin-top:4px;">Request software such as File servers, Foxit PDF Editor or DocuSign, as well as access to office printers or language packs for Microsoft Office</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d51bd395eb24961810fdedc5f7947d3" onclick="return openInPopup(this.href);" class="popup-link">Request New Software</a><p style="font-size:12px;color:#666;margin-top:4px;">Request software currently not in use at Van Ameyde group</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f654f9fbb9124c439314e584b051e731" onclick="return openInPopup(this.href);" class="popup-link">Email (Access &amp; Configuration)</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a new shared mailbox or distribution (or mailing) list or modify/delete an existing one.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e22b5714210042f2b848adfd752224fa" onclick="return openInPopup(this.href);" class="popup-link">SharePoint (Access &amp; Configuration)</a><p style="font-size:12px;color:#666;margin-top:4px;">Request access or changes to a SharePoint location.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=46e3a1f734f84ead9155e7c8996cb71f" onclick="return openInPopup(this.href);" class="popup-link">Cloudya (Access &amp; Configuration)</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a new account or changes to your company's Cloudya configuration.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=495486df329d46e69b35358c4cc77bca" onclick="return openInPopup(this.href);" class="popup-link">Audio/Video &amp; Web Conferencing</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes to be made to a new or existing conferencing set-up.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fc1635c9d0754c0195dd03294e4bcc60" onclick="return openInPopup(this.href);" class="popup-link">Self Service Portal Authorization</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a change to the authorizations for the self-service portal.</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>Hardware &amp; Accessories</div></div>
+                <div class="section-content">
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7abd523c57f44959b8ae4286e8ae86d5" onclick="return openInPopup(this.href);" class="popup-link">Order Hardware</a><p style="font-size:12px;color:#666;margin-top:4px;">Order new laptops or accessories</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70aaef22a8284beda3701650351983a2" onclick="return openInPopup(this.href);" class="popup-link">Device Allocation &amp; Decommissioning</a><p style="font-size:12px;color:#666;margin-top:4px;">Assign a laptop from stock or have a laptop decommissioned</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>VA Account Management</div></div>
+                <div class="section-content">
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b41d3ac8-b24c-4713-8e72-9a1caab0d5f9" onclick="return openInPopup(this.href);" class="popup-link">Request New Employment</a><p style="font-size:12px;color:#666;margin-top:4px;">Request an account for a new employee</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=5502d9bd-14ab-4100-90c6-b21dfd139223" onclick="return openInPopup(this.href);" class="popup-link">Modify Van Ameyde Account</a><p style="font-size:12px;color:#666;margin-top:4px;">Request changes to be made to an existing account</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2899e61e-f00c-4c44-8d27-4d163b957d3c" onclick="return openInPopup(this.href);" class="popup-link">Request Resignation</a><p style="font-size:12px;color:#666;margin-top:4px;">Request the closure of an account due to resignation</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1c3925048d5b4d6b8a3160faab3a25f1" onclick="return openInPopup(this.href);" class="popup-link">(Un)Block Van Ameyde Account</a><p style="font-size:12px;color:#666;margin-top:4px;">Request the blocking or unblocking of a Van Ameyde Account</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>Infrastructure &amp; Networks</div></div>
+                <div class="section-content">
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=266f9400-3503-48e6-9b31-a5a9da298154" onclick="return openInPopup(this.href);" class="popup-link">Network Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request changes to be made to the configuration of: WIFI, Internet Connectivity, or Wired Network.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=266f9400-3503-48e6-9b31-a5a9da298154" onclick="return openInPopup(this.href);" class="popup-link">Request Network Maintenance &amp; Support</a><p style="font-size:12px;color:#666;margin-top:4px;">Request all other network-related changes.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7f589dea-3f4c-4c4b-ab13-c91fa0cb5aed" onclick="return openInPopup(this.href);" class="popup-link">Office Relocation</a><p style="font-size:12px;color:#666;margin-top:4px;">Request network assistance for an upcoming relocation.</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=018de1ce-3dfd-4b9d-83b1-7359813351cc" onclick="return openInPopup(this.href);" class="popup-link">Infrastructure Consultancy</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a consultation with the Infrastructure team.</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader">Is there no form for you request?</div>
+    <div class="generic-buttons" style="grid-template-columns:1fr;max-width:60%;margin:0 auto;padding:20px;background:transparent;">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=d1bff6f6b7d64114a6a6fab4d100ba7c&from=38cef388-4980-43d1-9236-f565687bb85e" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Generic Request</div>
+            <div class="generic-button-description">For requests don't fit in an existing form</div>
+            <div class="generic-button-action">Submit Request</div>
+        </a>
+    </div>
+
+    <!-- ====== ECHO PRODUCT SUPPORT ====== -->
+    <div class="section-divider">&#128161; ECHO Product Support</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning ECHO and ECHO-related portals.</div>
+    <div class="generic-buttons">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6a63e8d591db4bda9ef077e234f555eb" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a problem</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report an incident</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=c38bb9d398ce4c74916ea2a9a765b4b7" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a question</div>
+            <div class="generic-button-description">Ask our support team and we will get back to you.</div>
+            <div class="generic-button-action">Ask a question</div>
+        </a>
+    </div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>ECHO R1</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Local &amp; Cross-Border Claim Handling Platform</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3eef4245-75ad-46c8-a2a7-6cafd06b0b84" onclick="return openInPopup(this.href);" class="popup-link">User Account Request ECHO R1</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to existing ECHO R1 accounts</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=523b25fb-1041-45c3-9102-d86d0fead054" onclick="return openInPopup(this.href);" class="popup-link">Client/CA/CT Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for clients, claim administrators, or claim types</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70915aaa-35ff-401c-806b-c1a9e7023e80" onclick="return openInPopup(this.href);" class="popup-link">Calamity Code</a><p style="font-size:12px;color:#666;margin-top:4px;">Request calamity code setup or changes</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=55853c72-ae3a-4931-b0ad-1759510c5886" onclick="return openInPopup(this.href);" class="popup-link">Document Template</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new document templates or modifications to existing templates</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7334b909-b364-4f4a-9f3d-3c5564234cf3" onclick="return openInPopup(this.href);" class="popup-link">Re-assign File(s)</a><p style="font-size:12px;color:#666;margin-top:4px;">Request files to be reassigned to different handlers</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=ca814e87-f797-4777-95e2-2ed4422ac754" onclick="return openInPopup(this.href);" class="popup-link">Release Party from Sanction-list</a><p style="font-size:12px;color:#666;margin-top:4px;">Request to release a party from the sanction list</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>ECHO R2</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Local Claim Handling Platform</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e39ab1dd-bc28-4385-a5c8-fa1ea11a0d43" onclick="return openInPopup(this.href);" class="popup-link">User Account Request ECHO R2</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to existing ECHO R2 accounts</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7dbf7782-438e-4be4-9a03-20fe9a9bd289" onclick="return openInPopup(this.href);" class="popup-link">Client/CA/CT Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for clients, claim administrators, or claim types</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6eb0d24f-e151-40b6-bb54-5560ecf43357" onclick="return openInPopup(this.href);" class="popup-link">Calamity Code</a><p style="font-size:12px;color:#666;margin-top:4px;">Request calamity code setup or changes</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a78f1db9-a392-40c7-bb4b-cac49f2dc509" onclick="return openInPopup(this.href);" class="popup-link">Document Template</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new document templates or modifications to existing templates</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f240fe2a-c913-4b0b-bb0c-e6e805d7c964" onclick="return openInPopup(this.href);" class="popup-link">Re-assign File(s)</a><p style="font-size:12px;color:#666;margin-top:4px;">Request files to be reassigned to different handlers</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1b39e3c2-0a5e-473e-af85-2db5f2242440" onclick="return openInPopup(this.href);" class="popup-link">Release Party from Sanction-list</a><p style="font-size:12px;color:#666;margin-top:4px;">Request to release a party from the sanction list</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=deaaff06-8868-4eca-836e-900d468babd4" onclick="return openInPopup(this.href);" class="popup-link">API Access Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request API access for seamless integration with ECHO R2</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>ECHO Marine</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Marine Surveying Activities Platform</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=92d24531-d541-4259-970a-d9fdd64162dd" onclick="return openInPopup(this.href);" class="popup-link">User Account Request ECHO Marine</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to existing ECHO Marine accounts</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=5c13e9ca-b61a-4d8a-8c03-92d180568c0b" onclick="return openInPopup(this.href);" class="popup-link">Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for ECHO Marine platform</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>Extranet</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Customer Portal for TPA Services</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b37ca2bf-1aca-4caa-8c1b-65a583d45a62" onclick="return openInPopup(this.href);" class="popup-link">User Account Request Extranet</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to existing Extranet accounts</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=adec006f-73e7-44d2-9fc9-6566f80a33fe" onclick="return openInPopup(this.href);" class="popup-link">Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for Extranet portal</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>IMS/FNOL</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Incident Management System / First Notice of Loss</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4a5a85ec-9db5-4b16-bbf8-1349d83967f7" onclick="return openInPopup(this.href);" class="popup-link">IMS/FNOL Account Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to existing IMS/FNOL accounts</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e0c7da7f-8c02-4dea-9609-19d50fcd0812" onclick="return openInPopup(this.href);" class="popup-link">Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for IMS/FNOL system</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d2b7333-c3b9-4240-abc5-219bca7fe48d" onclick="return openInPopup(this.href);" class="popup-link">Document Template</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new document templates or modifications to existing templates</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e2b6a32e-6116-47be-b39b-29a9bb28b407" onclick="return openInPopup(this.href);" class="popup-link">Jotform Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a new Jotform or modifications to an existing form</p></div></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div>MyClaim</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Policyholder Portal for Claim Management</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=c68b9c7e-2e3f-444a-a087-6cdfba988048" onclick="return openInPopup(this.href);" class="popup-link">MyClaim Account Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request new user access or modifications to MyClaim portal</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a18b0785-c708-4c29-b223-cdd738188e3e" onclick="return openInPopup(this.href);" class="popup-link">Configuration</a><p style="font-size:12px;color:#666;margin-top:4px;">Request configuration changes for MyClaim portal</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subheader">Looking for something more complex?</div>
+    <div class="generic-buttons" style="grid-template-columns:1fr;max-width:60%;margin:0 auto;padding:20px;background:transparent;">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b81f23ce5ecb460e9dc6347a2c87a3c0" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Product Development Request</div>
+            <div class="generic-button-description">Request new product development, enhancements, or major changes to existing applications</div>
+            <div class="generic-button-action">Submit Request</div>
+        </a>
+    </div>
+
+    <!-- ====== SECURITY & COMPLIANCE ====== -->
+    <div class="section-divider">&#128274; Security &amp; Compliance</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning the security of our IT environment.</div>
+    <div class="generic-buttons" style="grid-template-columns:1fr 1fr;">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=ac8eee43ed4d4195a74f0e7fd53e86f5" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Report a lost/stolen device</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report incident</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0a236723b02a4fe6bf9a333cc5d777ef" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Report a cyber security incident</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report incident</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4c7bc315302041b0a13bec4bca85e811" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Report Phishing</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report incident</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fb3b5a37d7ca482ebe69b36bb08a67bf" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a question</div>
+            <div class="generic-button-description">Ask our support team and we will get back to you.</div>
+            <div class="generic-button-action">Ask a question</div>
+        </a>
+    </div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>IT Compliance</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Policies, regulations &amp; legal requirements</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=76acd1f2-74e1-40f7-8267-b110616a1740" onclick="return openInPopup(this.href);" class="popup-link">Report a data breach / GDPR</a><p style="font-size:12px;color:#666;margin-top:4px;">Report a data breach or GDPR-related incident</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a52a1fbe-6483-4b1f-b9c2-b8ba455f5d22" onclick="return openInPopup(this.href);" class="popup-link">Customer Audit / RFP</a><p style="font-size:12px;color:#666;margin-top:4px;">Request support for a customer audit or RFP process</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fb3b5a37d7ca482ebe69b36bb08a67bf" onclick="return openInPopup(this.href);" class="popup-link">Ask a question</a><p style="font-size:12px;color:#666;margin-top:4px;">Ask a compliance-related question</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=04532ce1-c839-4a3c-be56-62b8add02135" onclick="return openInPopup(this.href);" class="popup-link">Training &amp; Education</a><p style="font-size:12px;color:#666;margin-top:4px;">Request compliance training or educational materials</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>Cyber Security</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">Protecting digital assets, systems &amp; data</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e5431d2340b24ef8a5007c01ea04f50a" onclick="return openInPopup(this.href);" class="popup-link">Request Access Abroad</a><p style="font-size:12px;color:#666;margin-top:4px;">Request IT access for working from abroad</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9c33f829-92b6-4f16-8002-e67d21639984" onclick="return openInPopup(this.href);" class="popup-link">Unblock Website Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a website to be unblocked</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0e44c80f-bffb-4166-ad61-15e136520e96" onclick="return openInPopup(this.href);" class="popup-link">Customer Penetration Test</a><p style="font-size:12px;color:#666;margin-top:4px;">Request or coordinate a customer penetration test</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f2c3d869-3e71-4e28-a78c-1d31d2e5d6c3" onclick="return openInPopup(this.href);" class="popup-link">Consultancy</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a security consultancy session</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="generic-buttons" style="grid-template-columns:1fr 1fr;padding:0 20px 20px 20px;background:white;">
+        <a href="https://vanameydeacademy.com/course/view.php?id=3" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">GDPR Training</div>
+            <div class="generic-button-description">Access GDPR training via the Van Ameyde Academy</div>
+            <div class="generic-button-action">Open Training</div>
+        </a>
+        <a href="https://vanameydegroup.sharepoint.com/sites/VA/SitePages/Phishing-Campaign-Infographic.aspx?web=1" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">Phishing Information</div>
+            <div class="generic-button-description">View the phishing campaign infographic on SharePoint</div>
+            <div class="generic-button-action">Open Infographic</div>
+        </a>
+    </div>
+
+    <!-- ====== FINANCE ====== -->
+    <div class="section-divider">&#128176; Finance</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning SAP.</div>
+    <div class="generic-buttons">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=78381587af384630bd5f9650b602fb4d" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a problem</div>
+            <div class="generic-button-description">Report a problem and we will fix it.</div>
+            <div class="generic-button-action">Report a malfunction</div>
+        </a>
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3c60f9b9234d4ac788d1c1b5d3eca14d" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a question</div>
+            <div class="generic-button-description">Ask our support team and we will get back to you.</div>
+            <div class="generic-button-action">Ask a question</div>
+        </a>
+    </div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>SAP Technical Support</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">For issues with processing financial transactions</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6b356fa5883c45e3959cf3820955b84c" onclick="return openInPopup(this.href);" class="popup-link">Access Request</a><p style="font-size:12px;color:#666;margin-top:4px;">Request access to SAP</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1e2775640d524f9ab253ab3a606e3fda" onclick="return openInPopup(this.href);" class="popup-link">Configuration Change / New</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a configuration change or new configuration in SAP</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f4f0b074837343cb946152e59b6ba97b" onclick="return openInPopup(this.href);" class="popup-link">Configuration Password Reset</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a SAP password reset</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=338c48314ee8426ead0e5bcb0b8f296b" onclick="return openInPopup(this.href);" class="popup-link">Configuration Change / New bank account</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a bank account change or addition in SAP</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>SAP Functional Support</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">For assistance with SAP processes</div>
+                    <ul>
+                        <li><div><p style="font-size:13px;color:#555;margin:0;">For functional support please send an email to: <a href="mailto:christel.thiart@vanameyde.com" class="popup-link">christel.thiart@vanameyde.com</a></p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== HYPERAUTOMATION ====== -->
+    <div class="section-divider">&#129302; HyperAutomation</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning Robotic Process Automation or AI implementation, such as Simplifai.</div>
+    <div class="generic-buttons" style="grid-template-columns:1fr;max-width:50%;margin:0 auto;">
+        <a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3c60f9b9234d4ac788d1c1b5d3eca14d" onclick="return openInPopup(this.href);" class="generic-button">
+            <div class="generic-button-title">I have a question</div>
+            <div class="generic-button-description">Ask a question about RPA processes, AI document or email handling, or other AI / Copilot related subjects.</div>
+            <div class="generic-button-action">Ask a Question</div>
+        </a>
+    </div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>Robotic Process Automation (RPA)</div><div class="header-labels"><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2840f2f2-8013-46a6-8a1d-1b9fa1e4ca09" onclick="return openInPopup(this.href);" class="malfunction-btn">Report malfunction</a></div></div>
+                <div class="section-content">
+                    <div class="subsection-header">UiPath Bot Automation</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fd38e158f6ab4ca0b9a4d267c99be565" onclick="return openInPopup(this.href);" class="popup-link">RPA Access Request <span style="font-size:11px;color:#999;font-weight:normal;">(Authorized users only)</span></a><p style="font-size:12px;color:#666;margin-top:4px;">Request access to RPA environments or bot dashboards</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=883868a6-e201-44fd-933c-110b507144e2" onclick="return openInPopup(this.href);" class="popup-link">Request a Bot <span style="font-size:11px;color:#999;font-weight:normal;">(Authorized users only)</span></a><p style="font-size:12px;color:#666;margin-top:4px;">Request development of a new RPA bot; prioritized by HA SteerCo</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=edcf40e1ddfd49eab35978bcfd13d587" onclick="return openInPopup(this.href);" class="popup-link">Change a Bot <span style="font-size:11px;color:#999;font-weight:normal;">(Authorized users only)</span></a><p style="font-size:12px;color:#666;margin-top:4px;">Request modifications to an existing bot; prioritized by HA SteerCo</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>AI Document &amp; Email Handling (Simplifai)</div><div class="header-labels"><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=80ece804-f79e-4f9d-bcba-de06c2c74c82" onclick="return openInPopup(this.href);" class="malfunction-btn">Report malfunction</a></div></div>
+                <div class="section-content">
+                    <div class="subsection-header">AI-powered Document &amp; Email Processing</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6102d672b4144d5b9fea962a302d03c1" onclick="return openInPopup(this.href);" class="popup-link">Simplifai Access Request <span style="font-size:11px;color:#999;font-weight:normal;">(Authorized users only)</span></a><p style="font-size:12px;color:#666;margin-top:4px;">Request access to the Simplifai AI platform</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== REPORTING ====== -->
+    <div class="section-divider">&#128202; Reporting &amp; Data Analytics</div>
+    <div class="section-divider-desc">For all problems, questions, and requests concerning Reporting &amp; Data Analytics.</div>
+    <div class="grid-container">
+        <div>
+            <div class="section">
+                <div class="section-header"><div>General &amp; Standard Reporting</div><div class="header-labels"><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b4e76c5a-d04d-4308-a75e-dd05df8a147b" onclick="return openInPopup(this.href);" class="malfunction-btn">Report malfunction</a></div></div>
+                <div class="section-content">
+                    <div class="subsection-header">BI, Dashboards &amp; Data Services</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=40d7615ea6ee4e50a36e11d0d8f6f56b" onclick="return openInPopup(this.href);" class="popup-link">Ask a Reporting Question</a><p style="font-size:12px;color:#666;margin-top:4px;">Ask a question about reports, dashboards, or data</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f7d5d4b899f4910a26994eac1daea16" onclick="return openInPopup(this.href);" class="popup-link">BI Access Request <span style="font-size:11px;color:#999;font-weight:normal;">(Authorized users only)</span></a><p style="font-size:12px;color:#666;margin-top:4px;">Request access to BI reports or Power BI dashboards</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=cba96577c28442b6a51f6fd96466c18e" onclick="return openInPopup(this.href);" class="popup-link">Request One-time Report</a><p style="font-size:12px;color:#666;margin-top:4px;">Request a one-time data extract or standard report</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="section">
+                <div class="section-header"><div>Custom Reports &amp; Dashboards</div></div>
+                <div class="section-content">
+                    <div class="subsection-header">New builds &amp; changes to existing reports</div>
+                    <ul>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=667defb8f23e4502a1007d4530240bd4" onclick="return openInPopup(this.href);" class="popup-link">New Dashboard / Report</a><p style="font-size:12px;color:#666;margin-top:4px;">Request development of a new custom dashboard or report</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=789beb28220b487281201e1aeffa6694" onclick="return openInPopup(this.href);" class="popup-link">Change Dashboard / Report</a><p style="font-size:12px;color:#666;margin-top:4px;">Request modifications to an existing dashboard or report</p></div></li>
+                        <li><div><a href="https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=cd3c6cd8acd94d09b0b115f483d0a1d2" onclick="return openInPopup(this.href);" class="popup-link">Temporary Increased Reporting</a><p style="font-size:12px;color:#666;margin-top:4px;">Request temporarily higher reporting frequency or volume</p></div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="subheader">Can't find what you are looking for?</div>
+    <div class="generic-buttons" style="grid-template-columns:1fr;max-width:40%;margin:0 auto;padding:20px;background:transparent;">
+        <a href="mailto:vasservicedeliveryteam@vanameyde.com" class="generic-button">
+            <div class="generic-button-description">Ask our Service Delivery Team directly</div>
+            <div class="generic-button-action">Ask for SSP Support</div>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+                <h3>Service Hours &amp; Support</h3>
+                <ul style="list-style:none;padding:0;">
+                    <li style="display:list-item;">&#128336; Business Hours: Mon-Fri, 08:00 - 17:30 CET/CEST <sup style="color:#1DC6B3;">*</sup></li>
+                    <li style="display:list-item;"><a href="https://vanameyde.topdesk.net/tas/public/ssp/" onclick="return openInPopup(this.href);" class="popup-link">&#128187; Self-Service Portal</a></li>
+                    <li style="display:list-item;">&#128222; ServiceDesk: +31 70 413 73 45 (Business Hours)</li>
+                    <li style="display:list-item;">&#128680; Emergency: +31 6 20 03 16 10 (After Hours)</li>
+                </ul>
+                <p style="font-size:12px;color:#a0aec0;margin-top:10px;border-top:1px solid rgba(255,255,255,0.15);padding-top:8px;">
+                    <sup style="color:#1DC6B3;">*</sup> Business Hours Local UK IT support: Mon-Fri, 08:30 - 17:30 (GMT)
+                </p>
+            </div>
+            <div>
+                <h3>Important Notes</h3>
+                <ul style="list-style:none;padding:0;">
+                    <li style="display:list-item;">&#128221; All requests must be in English</li>
+                    <li style="display:list-item;">&#128273; Access to forms is linked to your authorization profile. Can't see a form? That means it is not included in your profile.</li>
+                    <li style="display:list-item;">&#9889; Use emergency number only for P1 incidents</li>
+                    <li style="display:list-item;">&#128295; Maintenance window: 21:30 - 07:00 CET/CEST</li>
+                    <li style="display:list-item;">&#10071; Notice required: 10 working days for maintenance</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
