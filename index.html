@@ -22,8 +22,9 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 .logo-icon { width: 32px; height: 32px; background: var(--turquoise); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; font-weight: bold; font-size: 18px; color: var(--navy); }
 .header-title { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: normal; }
 .header-title span { color: var(--turquoise); margin-left: 6px; font-size: 14px; font-family: Verdana, Geneva, sans-serif; }
-#new-request-btn { background: none; border: 1px solid rgba(255,255,255,0.4); color: var(--white); font-family: Verdana, Geneva, sans-serif; font-size: 12px; padding: 5px 12px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
-#new-request-btn:hover { background: rgba(255,255,255,0.15); }
+.header-right { display: flex; align-items: center; gap: 10px; }
+#new-request-btn, #quick-guide-btn { background: none; border: 1px solid rgba(255,255,255,0.4); color: var(--white); font-family: Verdana, Geneva, sans-serif; font-size: 12px; padding: 5px 12px; border-radius: 4px; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+#new-request-btn:hover, #quick-guide-btn:hover { background: rgba(255,255,255,0.15); }
 #chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
 .message { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.55; word-wrap: break-word; }
 .message.bot { align-self: flex-start; background: var(--navy); color: var(--white); border-bottom-left-radius: 4px; }
@@ -46,7 +47,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 #send-btn { background: var(--navy); color: var(--white); border: none; width: 44px; height: 42px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity 0.2s; }
 #send-btn:hover { opacity: 0.88; }
 #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-@media (max-width: 480px) { .message { max-width: 90%; } .cta-card { max-width: 90%; } header { padding: 10px 14px; } #chat-area { padding: 14px; } }
+@media (max-width: 480px) { .message { max-width: 90%; } .cta-card { max-width: 90%; } header { padding: 10px 14px; } #chat-area { padding: 14px; } .header-right { gap: 4px; } }
 </style>
 </head>
 <body>
@@ -56,7 +57,10 @@ header { display: flex; align-items: center; justify-content: space-between; bac
       <div class="logo-icon" aria-hidden="true">VA</div>
       <div class="header-title">Van Ameyde Systems<span>| SSP Assistant</span></div>
     </div>
-    <button id="new-request-btn" aria-label="Start a new request">New request</button>
+    <div class="header-right">
+      <a id="quick-guide-btn" href="https://vanameyde.topdesk.net/tas/public/ssp/" target="_blank" rel="noopener noreferrer" aria-label="Open SSP Quick Guide">Quick Guide</a>
+      <button id="new-request-btn" aria-label="Start a new request">New request</button>
+    </div>
   </header>
   <div id="chat-area" role="log" aria-live="polite"></div>
   <div id="input-bar">
@@ -68,128 +72,459 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 (function () {
   'use strict';
 
+  /* ===== SLA KNOWLEDGE BASE ===== */
+  var SLA = [
+    { q: ['support hours','business hours','working hours','opening hours','when open','service hours','support window'],
+      a: 'Support hours are Monday to Friday, 08:00 to 17:30 CET/CEST. Exceptions: New Year\'s Day, Easter Monday, Ascension Day, Whit Monday, and Christmas (25th).' },
+    { q: ['maintenance window','maintenance hours','maintenance time','planned maintenance'],
+      a: 'Maintenance window is Monday to Friday 21:30 to 06:00 CET/CEST, and on weekends before 09:00 and after 14:00 CET/CEST. Maintenance during service hours requires 10 working days advance notification.' },
+    { q: ['emergency','after hours','outside business','emergency number','emergency phone','urgent call'],
+      a: 'For emergencies outside business hours, call the Emergency Call Service at +31 6 20 03 16 10. This is for P1 (critical) incidents only. During business hours, call the ServiceDesk at +31 70 413 73 45.' },
+    { q: ['phone','telephone number','call','servicedesk phone','service desk phone','contact number'],
+      a: 'ServiceDesk phone: +31 70 413 73 45 (during business hours). Emergency Call Service: +31 6 20 03 16 10 (outside business hours, P1 only).' },
+    { q: ['p1','priority 1','critical','urgent priority','p1 response','p1 resolution'],
+      a: 'P1 (Urgent/Critical): Complete work stoppage affecting a primary business process. Response time: 15 minutes. First line resolution: 2 hours, second line: 4 hours. SLO: 90% responded within 15 min, 80% resolved within 4 hours. No workaround available.' },
+    { q: ['p2','priority 2','high priority','major','p2 response','p2 resolution'],
+      a: 'P2 (High/Major): Business functions severely degraded, multiple users impacted. Response time: 30 minutes. First line resolution: 4 hours, second line: 8 hours. SLO: 90% responded within 30 min, 80% resolved within 8 hours.' },
+    { q: ['p3','priority 3','normal priority','moderate','p3 response','p3 resolution'],
+      a: 'P3 (Normal/Moderate): Certain functions unavailable or system degraded. Response time: 4 hours. First line resolution: 3 working days, second line: 5 working days. SLO: 90% responded within 4 hours, 80% resolved within 40 hours.' },
+    { q: ['p4','priority 4','low priority','p4 response','p4 resolution'],
+      a: 'P4 (Low/Minimal): Little impact, workaround available. Response time: 8 hours. First line resolution: 5 working days, second line: 10 working days. SLO: 90% responded within 8 hours, 90% resolved within 80 hours.' },
+    { q: ['response time','how fast','how quickly','how long response','sla response'],
+      a: 'Response times by priority: P1 (Critical) = 15 min, P2 (High) = 30 min, P3 (Normal) = 4 hours, P4 (Low) = 8 hours. All measured in business hours with a 90% SLO target.' },
+    { q: ['resolution time','how long fix','how long resolve','when fixed','sla resolution','resolve time'],
+      a: 'Resolution times (second line): P1 = 4 hours, P2 = 8 hours, P3 = 5 working days, P4 = 10 working days. SLO targets: P1/P2 = 80%, P3 = 80%, P4 = 90%.' },
+    { q: ['uptime','availability','sla uptime','service availability'],
+      a: 'Service availability SLOs: Self-Service Portal = 99.9% uptime (24/7). Echo R1/R2 = 99.5% uptime. IMS/Mobile Intake = 99.8% uptime. MyClaim = 99.8% uptime. Extranet = 99.5% uptime. Planned maintenance excluded.' },
+    { q: ['rto','recovery time','disaster recovery time','how long down'],
+      a: 'Recovery Time Objectives (RTO): MyClaim = 4 hours. IMS, Portal, Mobile Intake, ECHO R1/R2/Marine = 8 hours (1 business day).' },
+    { q: ['rpo','recovery point','data loss','backup recovery'],
+      a: 'Recovery Point Objectives (RPO): MyClaim = near zero data loss. IMS, Portal, Mobile Intake = 2 hours max data loss. ECHO R1/R2/Marine = 8 hours max data loss.' },
+    { q: ['customer satisfaction','survey','csat','satisfaction score','rating'],
+      a: 'Customer satisfaction is measured via survey after ticket closure. Scale: Very Dissatisfied (2) to Very Satisfied (10). SLO: 80% of incident surveys rated neutral (6) or higher; 90% of change request surveys rated neutral (6) or higher.' },
+    { q: ['incident manager','escalation','escalate'],
+      a: 'Incident Manager: Menno Sluijters (Menno.Sluijters@vanameyde.com). This is the first escalation stage for incidents not resolvable within agreed service levels. Expected response: next business day.' },
+    { q: ['change manager','change advisory','cab','change management contact'],
+      a: 'Change Manager: Miron Radovicka (Miron.Radovicka@vanameyde.com). Controls the lifecycle of all changes. Important changes go to the Change Advisory Board (CAB). Expected response: next business day.' },
+    { q: ['security officer','biso','information security'],
+      a: 'Business Information Security Officer: Jeroen Leijnse (Jeroen.leijnse@vanameyde.com). Ensures confidentiality, integrity, and availability of information and IT services. Expected response: next business day.' },
+    { q: ['compliance manager','compliance contact','audit'],
+      a: 'Compliance Manager: Emil Driesenaar (Emil.driesenaar@vanameyde.com). Ensures adherence to legal, regulatory, and ethical standards. Expected response: next business day.' },
+    { q: ['service delivery','account manager','service manager','sdm'],
+      a: 'Service Delivery Manager: Koen Molenaar (Koen.molenaar@vanameyde.com) / Menno Sluijters (Menno.Sluijters@vanameyde.com). Account Manager: Koen Molenaar. Expected response: next business day.' },
+    { q: ['sla','service level agreement','service level','sla overview'],
+      a: 'The SLA covers all Van Ameyde Systems activities for Van Ameyde Group operating companies. Key areas: Support (08:00 to 17:30 CET), Response times (P1: 15min to P4: 8hrs), Resolution times (P1: 4hrs to P4: 10 days), Service availability (99.5% to 99.9%), and Disaster recovery. Ask me about any specific area for details.' },
+    { q: ['major incident','root cause','rca','root cause analysis'],
+      a: 'P1 and some P2 incidents are major incidents. After resolution, a root cause analysis (RCA) is performed. If outage was shorter than 60 minutes, root cause is shared via email or Teams. For outages over 60 minutes, a full RCA document is provided within 10 working days.' },
+    { q: ['isae','soc','isae 3402','assurance','controls'],
+      a: 'Van Ameyde Systems provides ISAE 3402 SOC 1 Type II assurance for ECHO R1/R2, Data Warehouse (DWH), SAP, and IMS/FNOL. Controls cover: physical/logical access management, change/incident management, service levels, HR procedures, backup/recovery, and reporting data integrity.' },
+    { q: ['priority','how priority determined','impact urgency','priority matrix'],
+      a: 'Priority is determined by Impact x Urgency. Impact levels: Person, Team, Department, Building, Company. Urgency levels: Low (workaround available), Normal (moderate effect), High (severely degraded), Critical (complete work stoppage). Example: Company impact + Critical urgency = P1.' },
+    { q: ['reporting','service report','monthly report'],
+      a: 'Service level reporting is provided monthly within the first 10 working days of the following month, followed by a monthly meeting. Reports are available on the Customer incident report folder in SharePoint. Additional reports available upon request.' }
+  ];
+
+  /* ===== FORMS DATABASE ===== */
   var FORMS = [
-    { id: 'incident', name: 'Report an Incident', category: 'General', restricted: false,
+    /* --- MY WORKPLACE: GENERAL --- */
+    { id: 'incident', name: 'Report an Incident', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f',
       desc: 'Report something that is broken or not working correctly.',
-      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access'],
+      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access','i have a problem'],
       words: ['incident','broken','error','crash','down','issue','problem','bug','fault','failure','outage','malfunction','slow','frozen','freeze','stuck','glitch','unresponsive'] },
-    { id: 'question', name: 'Ask a Question', category: 'General', restricted: false,
+    { id: 'question', name: 'Ask a Question', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
       desc: 'Ask a general IT question (not an incident).',
-      phrases: ['ask a question','general question','how do i','how to'],
-      words: ['question','wondering','guidance','info','information'] },
+      phrases: ['ask a question','general question','how do i','how to','i have a question'],
+      words: ['question','wondering','guidance','info','information','advice'] },
+    /* --- ACCESS & SOFTWARE --- */
     { id: 'existing-software', name: 'Request Access to Existing Software', category: 'Access & Software', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b',
-      desc: 'Request access to software such as Foxit, DocuSign, printers, file servers, or Office language packs.',
+      desc: 'Request access to Foxit, DocuSign, printers, file servers, or Office language packs.',
       phrases: ['existing software','need access','grant access','access to foxit','access to docusign','language pack','file server','office language'],
       words: ['foxit','docusign','printer','printers','access','permission','permissions','software'] },
     { id: 'new-software', name: 'Request New Software', category: 'Access & Software', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d51bd395eb24961810fdedc5f7947d3',
-      desc: 'Request software that is not yet in use at Van Ameyde.',
+      desc: 'Request software not yet in use at Van Ameyde.',
       phrases: ['new software','install software','new application','new tool','new program','software not available','software request'],
       words: ['install','application'] },
-    { id: 'disable-account', name: 'Disable Van Ameyde Account', category: 'Access & Software', restricted: false,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b',
-      desc: 'Disable or remove an account (offboarding).',
-      phrases: ['disable account','remove account','deactivate account','delete account','end contract'],
-      words: ['offboarding','leaver','leaving','departure','deactivate','disable'] },
-    { id: 'email', name: 'Email / Mailbox / Distribution List', category: 'Communication', restricted: false,
+    { id: 'email', name: 'Email / Mailbox / Distribution List', category: 'Access & Software', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f654f9fbb9124c439314e584b051e731',
       desc: 'Create, modify, or delete a shared mailbox or distribution list.',
       phrases: ['shared mailbox','distribution list','mailing list','mail group','new mailbox'],
       words: ['email','mailbox','outlook','mail','distribution'] },
-    { id: 'sharepoint', name: 'SharePoint', category: 'Communication', restricted: false,
+    { id: 'sharepoint', name: 'SharePoint (Access & Configuration)', category: 'Access & Software', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e22b5714210042f2b848adfd752224fa',
       desc: 'Request access or changes to a SharePoint location.',
       phrases: ['sharepoint access','sharepoint permission','share point','document library','team site','site access'],
       words: ['sharepoint'] },
-    { id: 'av', name: 'A/V Configuration', category: 'Communication', restricted: false,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
-      desc: 'Audio/visual or meeting room setup and configuration.',
-      phrases: ['meeting room','conference room','teams room','audio visual','a/v config'],
-      words: ['audio','video','av','projector','display','screen','camera','microphone'] },
-    { id: 'cloudya', name: 'Cloudya (Telephony)', category: 'Communication', restricted: false,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
-      desc: 'Telephony; new account or configuration changes via Cloudya.',
+    { id: 'cloudya', name: 'Cloudya (Access & Configuration)', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=46e3a1f734f84ead9155e7c8996cb71f',
+      desc: 'Request a new Cloudya account or configuration changes.',
       phrases: ['call forwarding','phone number','phone extension'],
       words: ['cloudya','telephony','phone','telephone','voip','extension'] },
-    { id: 'order-hardware', name: 'Order Hardware', category: 'Hardware & Devices', restricted: true,
+    { id: 'av', name: 'Audio/Video & Web Conferencing', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=495486df329d46e69b35358c4cc77bca',
+      desc: 'Request configuration changes for meeting room or conferencing setup.',
+      phrases: ['meeting room','conference room','teams room','audio visual','a/v config','web conferencing'],
+      words: ['audio','video','av','projector','display','screen','camera','microphone','conferencing'] },
+    { id: 'ssp-auth', name: 'Self Service Portal Authorization', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fc1635c9d0754c0195dd03294e4bcc60',
+      desc: 'Request a change to authorizations for the Self-Service Portal.',
+      phrases: ['ssp authorization','portal authorization','ssp access','portal access change'],
+      words: ['authorization'] },
+    /* --- HARDWARE & ACCESSORIES --- */
+    { id: 'order-hardware', name: 'Order Hardware', category: 'Hardware & Accessories', restricted: true,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7abd523c57f44959b8ae4286e8ae86d5',
-      desc: 'Order new hardware (shipping costs may be charged).',
+      desc: 'Order new laptops or accessories.',
       phrases: ['order hardware','new laptop','new monitor','new keyboard','new mouse','new headset','new computer','new dock','docking station','buy hardware','purchase hardware','new device','new equipment','hardware order'],
       words: ['laptop','monitor','keyboard','mouse','headset','dock','hardware','order','purchase'] },
-    { id: 'device-allocation', name: 'Device Allocation & Decommissioning', category: 'Hardware & Devices', restricted: true,
+    { id: 'device-allocation', name: 'Device Allocation & Decommissioning', category: 'Hardware & Accessories', restricted: true,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70aaef22a8284beda3701650351983a2',
-      desc: 'Assign or decommission a device.',
+      desc: 'Assign a laptop from stock or have a laptop decommissioned.',
       phrases: ['assign device','allocate device','return device','return laptop','return equipment','device allocation','recycle device','old device','old laptop'],
       words: ['decommission','allocate','allocation','recycle'] },
-    { id: 'infra', name: 'Infrastructure Consultancy', category: 'Infrastructure', restricted: false,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60',
-      desc: 'Cloud, server, storage, or network advice and changes.',
-      phrases: ['virtual machine','disk space','sftp server','ftp server'],
-      words: ['infrastructure','cloud','server','storage','azure','aws','vm','capacity','database','hosting','sftp','ftp'] },
-    { id: 'network', name: 'Network Configuration', category: 'Infrastructure', restricted: false,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60',
-      desc: 'VPN, firewall, or network setup and changes.',
-      phrases: ['firewall rule','ip address','sftp access','ftp access'],
-      words: ['network','vpn','firewall','dns','port','proxy','connectivity','wifi','lan','wan','vlan'] },
-    { id: 'ims-access', name: 'IMS/FNOL Access Request', category: 'IMS/FNOL', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2ea0f904d85243469c390ee4c8e77293',
-      desc: 'Request access to IMS or FNOL.',
+    /* --- VA ACCOUNT MANAGEMENT --- */
+    { id: 'new-employment', name: 'Request New Employment', category: 'VA Account Management', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b41d3ac8-b24c-4713-8e72-9a1caab0d5f9',
+      desc: 'Request an account for a new employee.',
+      phrases: ['new employee','new employment','new account','new starter','new joiner','new hire','onboarding'],
+      words: ['joiner','onboarding','hire','starter','employment'] },
+    { id: 'modify-account', name: 'Modify Van Ameyde Account', category: 'VA Account Management', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=5502d9bd-14ab-4100-90c6-b21dfd139223',
+      desc: 'Request changes to an existing Van Ameyde account.',
+      phrases: ['modify account','change account','update account','account change','account modification','name change'],
+      words: ['modify','mover'] },
+    { id: 'resignation', name: 'Request Resignation', category: 'VA Account Management', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2899e61e-f00c-4c44-8d27-4d163b957d3c',
+      desc: 'Request closure of an account due to resignation.',
+      phrases: ['resignation','close account','disable account','remove account','deactivate account','end contract','account closure'],
+      words: ['offboarding','leaver','leaving','departure','deactivate','disable','resign'] },
+    { id: 'block-account', name: '(Un)Block Van Ameyde Account', category: 'VA Account Management', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1c3925048d5b4d6b8a3160faab3a25f1',
+      desc: 'Request blocking or unblocking of a Van Ameyde account.',
+      phrases: ['block account','unblock account','blocked account','account blocked','account suspended','suspend account'],
+      words: ['block','unblock','suspend','suspended'] },
+    /* --- INFRASTRUCTURE & NETWORKS --- */
+    { id: 'network', name: 'Network Configuration', category: 'Infrastructure & Networks', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=266f9400-3503-48e6-9b31-a5a9da298154',
+      desc: 'Request changes to WIFI, internet connectivity, or wired network.',
+      phrases: ['firewall rule','ip address','sftp access','ftp access','network configuration','network change','wifi access'],
+      words: ['network','vpn','firewall','dns','port','proxy','connectivity','wifi','lan','wan','vlan','sftp','ftp'] },
+    { id: 'office-relocation', name: 'Office Relocation', category: 'Infrastructure & Networks', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7f589dea-3f4c-4c4b-ab13-c91fa0cb5aed',
+      desc: 'Request network assistance for an upcoming office relocation.',
+      phrases: ['office relocation','office move','moving office','relocating office'],
+      words: ['relocation','relocate','moving'] },
+    { id: 'infra', name: 'Infrastructure Consultancy', category: 'Infrastructure & Networks', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=018de1ce-3dfd-4b9d-83b1-7359813351cc',
+      desc: 'Request a consultation with the Infrastructure team.',
+      phrases: ['virtual machine','disk space','sftp server','ftp server','infrastructure consultancy'],
+      words: ['infrastructure','cloud','server','storage','azure','aws','vm','capacity','database','hosting'] },
+    /* --- GENERIC REQUEST --- */
+    { id: 'generic-request', name: 'Generic Request', category: 'My Workplace', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=d1bff6f6b7d64114a6a6fab4d100ba7c&from=38cef388-4980-43d1-9236-f565687bb85e',
+      desc: 'For requests that do not fit in an existing form.',
+      phrases: ['generic request','other request','no form','cant find form','cannot find form'],
+      words: ['generic','other'] },
+    /* --- ECHO PRODUCT SUPPORT --- */
+    { id: 'echo-incident', name: 'ECHO Product Incident', category: 'ECHO Product Support', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6a63e8d591db4bda9ef077e234f555eb',
+      desc: 'Report a problem with an ECHO product.',
+      phrases: ['echo incident','echo problem','echo broken','echo not working','echo error','echo bug'],
+      words: [] },
+    { id: 'echo-question', name: 'ECHO Product Question', category: 'ECHO Product Support', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=c38bb9d398ce4c74916ea2a9a765b4b7',
+      desc: 'Ask a question about an ECHO product.',
+      phrases: ['echo question','echo help'],
+      words: [] },
+    /* --- ECHO R1 --- */
+    { id: 'echo-r1-access', name: 'User Account Request ECHO R1', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3eef4245-75ad-46c8-a2a7-6cafd06b0b84',
+      desc: 'Request new user access or modifications to ECHO R1 accounts.',
+      phrases: ['echo r1 access','echo r1 account','echo r1 user','echo access'],
+      words: ['echo'] },
+    { id: 'echo-r1-client', name: 'ECHO R1 Client/CA/CT Configuration', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=523b25fb-1041-45c3-9102-d86d0fead054',
+      desc: 'Configure clients, claim administrators, or claim types in ECHO R1.',
+      phrases: ['echo r1 client','echo r1 config','echo client','echo ca','echo ct','claim administrator','claim type','echo configuration','echo config'],
+      words: [] },
+    { id: 'echo-r1-calamity', name: 'ECHO R1 Calamity Code', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70915aaa-35ff-401c-806b-c1a9e7023e80',
+      desc: 'Set up or change calamity codes in ECHO R1.',
+      phrases: ['calamity code','echo calamity','storm code','disaster code'],
+      words: ['calamity'] },
+    { id: 'echo-r1-template', name: 'ECHO R1 Document Template', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=55853c72-ae3a-4931-b0ad-1759510c5886',
+      desc: 'New or modified document templates for ECHO R1.',
+      phrases: ['echo r1 template','echo template','echo document template'],
+      words: ['template'] },
+    { id: 'echo-r1-reassign', name: 'ECHO R1 Re-assign Files', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7334b909-b364-4f4a-9f3d-3c5564234cf3',
+      desc: 'Reassign files to different handlers in ECHO R1.',
+      phrases: ['reassign files','re-assign files','echo files','transfer files','move files'],
+      words: ['reassign','handler'] },
+    { id: 'echo-r1-sanction', name: 'ECHO R1 Release Party from Sanction list', category: 'ECHO R1', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=ca814e87-f797-4777-95e2-2ed4422ac754',
+      desc: 'Release a party from the sanctions list in ECHO R1.',
+      phrases: ['sanction list','release party','echo sanction'],
+      words: ['sanction','sanctions','sanctioned'] },
+    /* --- ECHO R2 --- */
+    { id: 'echo-r2-access', name: 'User Account Request ECHO R2', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e39ab1dd-bc28-4385-a5c8-fa1ea11a0d43',
+      desc: 'Request new user access or modifications to ECHO R2 accounts.',
+      phrases: ['echo r2 access','echo r2 account','echo r2 user'],
+      words: [] },
+    { id: 'echo-r2-client', name: 'ECHO R2 Client/CA/CT Configuration', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7dbf7782-438e-4be4-9a03-20fe9a9bd289',
+      desc: 'Configure clients, claim administrators, or claim types in ECHO R2.',
+      phrases: ['echo r2 client','echo r2 config'],
+      words: [] },
+    { id: 'echo-r2-calamity', name: 'ECHO R2 Calamity Code', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6eb0d24f-e151-40b6-bb54-5560ecf43357',
+      desc: 'Set up or change calamity codes in ECHO R2.',
+      phrases: ['echo r2 calamity'],
+      words: [] },
+    { id: 'echo-r2-template', name: 'ECHO R2 Document Template', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a78f1db9-a392-40c7-bb4b-cac49f2dc509',
+      desc: 'New or modified document templates for ECHO R2.',
+      phrases: ['echo r2 template'],
+      words: [] },
+    { id: 'echo-r2-reassign', name: 'ECHO R2 Re-assign Files', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f240fe2a-c913-4b0b-bb0c-e6e805d7c964',
+      desc: 'Reassign files to different handlers in ECHO R2.',
+      phrases: ['echo r2 reassign','echo r2 files'],
+      words: [] },
+    { id: 'echo-r2-sanction', name: 'ECHO R2 Release Party from Sanction list', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1b39e3c2-0a5e-473e-af85-2db5f2242440',
+      desc: 'Release a party from the sanctions list in ECHO R2.',
+      phrases: ['echo r2 sanction'],
+      words: [] },
+    { id: 'echo-r2-api', name: 'ECHO R2 API Access Request', category: 'ECHO R2', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=deaaff06-8868-4eca-836e-900d468babd4',
+      desc: 'Request API access for integration with ECHO R2.',
+      phrases: ['echo r2 api','echo api','api access','api integration'],
+      words: ['api'] },
+    /* --- ECHO MARINE --- */
+    { id: 'echo-marine-access', name: 'User Account Request ECHO Marine', category: 'ECHO Marine', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=92d24531-d541-4259-970a-d9fdd64162dd',
+      desc: 'Request new user access or modifications to ECHO Marine accounts.',
+      phrases: ['echo marine access','echo marine account','echo marine user','marine access'],
+      words: ['marine'] },
+    { id: 'echo-marine-config', name: 'ECHO Marine Configuration', category: 'ECHO Marine', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=5c13e9ca-b61a-4d8a-8c03-92d180568c0b',
+      desc: 'Request configuration changes for ECHO Marine platform.',
+      phrases: ['echo marine config','echo marine configuration','marine configuration'],
+      words: [] },
+    /* --- EXTRANET --- */
+    { id: 'extranet-access', name: 'User Account Request Extranet', category: 'Extranet', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b37ca2bf-1aca-4caa-8c1b-65a583d45a62',
+      desc: 'Request new user access or modifications to Extranet accounts.',
+      phrases: ['extranet access','extranet account','extranet user'],
+      words: ['extranet'] },
+    { id: 'extranet-config', name: 'Extranet Configuration', category: 'Extranet', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=adec006f-73e7-44d2-9fc9-6566f80a33fe',
+      desc: 'Request configuration changes for Extranet portal.',
+      phrases: ['extranet config','extranet configuration','extranet change'],
+      words: [] },
+    /* --- IMS/FNOL --- */
+    { id: 'ims-access', name: 'IMS/FNOL Account Request', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4a5a85ec-9db5-4b16-bbf8-1349d83967f7',
+      desc: 'Request new user access or modifications to IMS/FNOL accounts.',
       phrases: ['ims access','fnol access','ims account','fnol account','ims request','fnol request'],
       words: ['ims','fnol'] },
-    { id: 'ims-config', name: 'IMS/FNOL Configuration Change', category: 'IMS/FNOL', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f75d042ed894468810f407b5f823648',
-      desc: 'Change configuration or settings in IMS/FNOL.',
+    { id: 'ims-config', name: 'IMS/FNOL Configuration', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e0c7da7f-8c02-4dea-9609-19d50fcd0812',
+      desc: 'Request configuration changes for IMS/FNOL system.',
       phrases: ['ims config','fnol config','ims change','fnol change','ims configuration','fnol configuration','ims setting','fnol setting'],
       words: [] },
     { id: 'ims-template', name: 'IMS/FNOL Document Template', category: 'IMS/FNOL', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=eee1d11b36394599b457417efbb246cc',
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d2b7333-c3b9-4240-abc5-219bca7fe48d',
       desc: 'New or modified document templates for IMS/FNOL.',
       phrases: ['ims template','fnol template','ims document','fnol document'],
       words: [] },
-    { id: 'myclaim-access', name: 'MyClaim Access Request', category: 'MyClaim', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c658cd5f74543f2b43d1119792bb942',
-      desc: 'Request access to MyClaim.',
+    { id: 'ims-jotform', name: 'IMS/FNOL Jotform Request', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e2b6a32e-6116-47be-b39b-29a9bb28b407',
+      desc: 'Request a new Jotform or modifications to an existing form.',
+      phrases: ['jotform','jot form','ims jotform','fnol jotform'],
+      words: ['jotform'] },
+    /* --- MYCLAIM --- */
+    { id: 'myclaim-access', name: 'MyClaim Account Request', category: 'MyClaim', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=c68b9c7e-2e3f-444a-a087-6cdfba988048',
+      desc: 'Request new user access or modifications to MyClaim portal.',
       phrases: ['myclaim access','myclaim account','myclaim request','my claim access','my claim account'],
       words: ['myclaim'] },
-    { id: 'myclaim-config', name: 'MyClaim Configuration Change', category: 'MyClaim', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0d38f6fbece544328c753bda3a3e8d38',
-      desc: 'Change configuration or settings in MyClaim.',
+    { id: 'myclaim-config', name: 'MyClaim Configuration', category: 'MyClaim', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a18b0785-c708-4c29-b223-cdd738188e3e',
+      desc: 'Request configuration changes for MyClaim portal.',
       phrases: ['myclaim config','myclaim change','myclaim setting','myclaim configuration','my claim config','my claim change'],
       words: [] },
-    { id: 'echo-client', name: 'ECHO Client/CA/CT Configuration', category: 'ECHO', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3ca18c0472f34b958bf02610aa3fdea9',
-      desc: 'Configure clients, claim administrators, or claim types in ECHO.',
-      phrases: ['echo client','echo ca','echo ct','claim administrator','claim type','echo configuration','echo config'],
-      words: ['echo'] },
-    { id: 'echo-calamity', name: 'ECHO Calamity Code', category: 'ECHO', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=221956cc3cfc4ea4865082e3f169c212',
-      desc: 'Set up or change calamity codes in ECHO.',
-      phrases: ['calamity code','echo calamity','storm code','disaster code'],
-      words: ['calamity'] },
-    { id: 'echo-template', name: 'ECHO Document Template', category: 'ECHO', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=54c5ce89788645ec827df389d5b388e1',
-      desc: 'New or modified document templates for ECHO.',
-      phrases: ['echo template','echo document','echo document template'],
-      words: ['template'] },
-    { id: 'echo-reassign', name: 'ECHO Re-assign Files / Access Request', category: 'ECHO', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70311135e86c4be59e3b42b2c2193300',
-      desc: 'Reassign files to different handlers in ECHO.',
-      phrases: ['reassign files','re-assign files','echo files','echo access','transfer files','move files'],
-      words: ['reassign','handler'] },
-    { id: 'echo-sanction', name: 'ECHO Release Party from Sanction list', category: 'ECHO', restricted: true,
-      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=13c4b3a1a86e43f292adc6d2b94068ad',
-      desc: 'Release a party from the sanctions list in ECHO.',
-      phrases: ['sanction list','release party','echo sanction'],
-      words: ['sanction','sanctions','sanctioned'] }
+    /* --- SECURITY & COMPLIANCE --- */
+    { id: 'lost-stolen', name: 'Report Lost/Stolen Device', category: 'Security & Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=ac8eee43ed4d4195a74f0e7fd53e86f5',
+      desc: 'Report a lost or stolen device.',
+      phrases: ['lost device','stolen device','lost laptop','stolen laptop','lost phone','stolen phone','device stolen','device lost'],
+      words: ['lost','stolen','theft'] },
+    { id: 'cyber-incident', name: 'Report Cyber Security Incident', category: 'Security & Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0a236723b02a4fe6bf9a333cc5d777ef',
+      desc: 'Report a cyber security incident.',
+      phrases: ['cyber incident','security incident','security breach','cyber attack','cyber security incident','hacked','been hacked'],
+      words: ['cyber','breach','hacked','ransomware','malware','virus'] },
+    { id: 'phishing', name: 'Report Phishing', category: 'Security & Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4c7bc315302041b0a13bec4bca85e811',
+      desc: 'Report a phishing email or attempt.',
+      phrases: ['report phishing','phishing email','suspicious email','phishing attempt'],
+      words: ['phishing','suspicious'] },
+    { id: 'security-question', name: 'Security / Compliance Question', category: 'Security & Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fb3b5a37d7ca482ebe69b36bb08a67bf',
+      desc: 'Ask a security or compliance related question.',
+      phrases: ['security question','compliance question'],
+      words: ['security','compliance'] },
+    { id: 'data-breach', name: 'Report Data Breach / GDPR', category: 'IT Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=76acd1f2-74e1-40f7-8267-b110616a1740',
+      desc: 'Report a data breach or GDPR related incident.',
+      phrases: ['data breach','gdpr incident','gdpr breach','personal data breach','data leak'],
+      words: ['gdpr','breach'] },
+    { id: 'audit', name: 'Customer Audit / RFP', category: 'IT Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=a52a1fbe-6483-4b1f-b9c2-b8ba455f5d22',
+      desc: 'Request support for a customer audit or RFP process.',
+      phrases: ['customer audit','rfp process','rfp support','audit support'],
+      words: ['audit','rfp'] },
+    { id: 'compliance-training', name: 'Compliance Training & Education', category: 'IT Compliance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=04532ce1-c839-4a3c-be56-62b8add02135',
+      desc: 'Request compliance training or educational materials.',
+      phrases: ['compliance training','security training','gdpr training'],
+      words: ['training','education'] },
+    { id: 'access-abroad', name: 'Request Access Abroad', category: 'Cyber Security', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e5431d2340b24ef8a5007c01ea04f50a',
+      desc: 'Request IT access for working from abroad.',
+      phrases: ['access abroad','working abroad','work from abroad','travel access','working overseas'],
+      words: ['abroad','overseas','travel'] },
+    { id: 'unblock-website', name: 'Unblock Website Request', category: 'Cyber Security', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9c33f829-92b6-4f16-8002-e67d21639984',
+      desc: 'Request a website to be unblocked.',
+      phrases: ['unblock website','website blocked','blocked website','unblock site','site blocked','cant access website','cannot access website'],
+      words: ['unblock','blocked'] },
+    { id: 'pentest', name: 'Customer Penetration Test', category: 'Cyber Security', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0e44c80f-bffb-4166-ad61-15e136520e96',
+      desc: 'Request or coordinate a customer penetration test.',
+      phrases: ['penetration test','pen test','pentest','security test'],
+      words: ['penetration','pentest'] },
+    { id: 'security-consultancy', name: 'Security Consultancy', category: 'Cyber Security', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f2c3d869-3e71-4e28-a78c-1d31d2e5d6c3',
+      desc: 'Request a security consultancy session.',
+      phrases: ['security consultancy','security consultation','security advice'],
+      words: ['consultancy'] },
+    /* --- FINANCE / SAP --- */
+    { id: 'sap-incident', name: 'SAP Malfunction', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=78381587af384630bd5f9650b602fb4d',
+      desc: 'Report a problem with SAP.',
+      phrases: ['sap problem','sap error','sap broken','sap not working','sap incident','sap malfunction','sap issue'],
+      words: ['sap'] },
+    { id: 'sap-question', name: 'SAP Question', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3c60f9b9234d4ac788d1c1b5d3eca14d',
+      desc: 'Ask a question about SAP.',
+      phrases: ['sap question','sap help','sap info'],
+      words: [] },
+    { id: 'sap-access', name: 'SAP Access Request', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6b356fa5883c45e3959cf3820955b84c',
+      desc: 'Request access to SAP.',
+      phrases: ['sap access','sap account','sap user'],
+      words: [] },
+    { id: 'sap-config', name: 'SAP Configuration Change/New', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1e2775640d524f9ab253ab3a606e3fda',
+      desc: 'Request a configuration change or new configuration in SAP.',
+      phrases: ['sap config','sap configuration','sap change','sap setting'],
+      words: [] },
+    { id: 'sap-password', name: 'SAP Password Reset', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f4f0b074837343cb946152e59b6ba97b',
+      desc: 'Request a SAP password reset.',
+      phrases: ['sap password','sap password reset','sap reset'],
+      words: [] },
+    { id: 'sap-bank', name: 'SAP Bank Account Change', category: 'Finance', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=338c48314ee8426ead0e5bcb0b8f296b',
+      desc: 'Request a bank account change or addition in SAP.',
+      phrases: ['sap bank','bank account','sap bank account','bank change'],
+      words: ['bank'] },
+    /* --- HYPERAUTOMATION --- */
+    { id: 'rpa-incident', name: 'RPA Malfunction', category: 'HyperAutomation', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2840f2f2-8013-46a6-8a1d-1b9fa1e4ca09',
+      desc: 'Report a malfunction with an RPA bot.',
+      phrases: ['rpa problem','rpa error','rpa broken','rpa malfunction','bot broken','bot error','bot not working','rpa not working'],
+      words: ['rpa','bot','uipath'] },
+    { id: 'rpa-access', name: 'RPA Access Request', category: 'HyperAutomation', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=fd38e158f6ab4ca0b9a4d267c99be565',
+      desc: 'Request access to RPA environments or bot dashboards.',
+      phrases: ['rpa access','rpa account','uipath access'],
+      words: [] },
+    { id: 'rpa-new-bot', name: 'Request a Bot', category: 'HyperAutomation', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=883868a6-e201-44fd-933c-110b507144e2',
+      desc: 'Request development of a new RPA bot.',
+      phrases: ['new bot','request bot','build bot','create bot','new rpa bot'],
+      words: [] },
+    { id: 'rpa-change-bot', name: 'Change a Bot', category: 'HyperAutomation', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=edcf40e1ddfd49eab35978bcfd13d587',
+      desc: 'Request modifications to an existing RPA bot.',
+      phrases: ['change bot','modify bot','update bot','change rpa bot'],
+      words: [] },
+    { id: 'simplifai-incident', name: 'Simplifai Malfunction', category: 'HyperAutomation', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=80ece804-f79e-4f9d-bcba-de06c2c74c82',
+      desc: 'Report a malfunction with Simplifai AI platform.',
+      phrases: ['simplifai problem','simplifai error','simplifai broken','simplifai not working','simplifai malfunction'],
+      words: ['simplifai'] },
+    { id: 'simplifai-access', name: 'Simplifai Access Request', category: 'HyperAutomation', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=6102d672b4144d5b9fea962a302d03c1',
+      desc: 'Request access to the Simplifai AI platform.',
+      phrases: ['simplifai access','simplifai account'],
+      words: [] },
+    /* --- REPORTING & DATA ANALYTICS --- */
+    { id: 'reporting-incident', name: 'Reporting Malfunction', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b4e76c5a-d04d-4308-a75e-dd05df8a147b',
+      desc: 'Report a malfunction with reporting or dashboards.',
+      phrases: ['reporting problem','reporting error','dashboard error','dashboard broken','report broken','reporting malfunction'],
+      words: ['reporting','dashboard'] },
+    { id: 'reporting-question', name: 'Ask a Reporting Question', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=40d7615ea6ee4e50a36e11d0d8f6f56b',
+      desc: 'Ask a question about reports, dashboards, or data.',
+      phrases: ['reporting question','dashboard question','data question','report question'],
+      words: [] },
+    { id: 'bi-access', name: 'BI Access Request', category: 'Reporting & Analytics', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f7d5d4b899f4910a26994eac1daea16',
+      desc: 'Request access to BI reports or Power BI dashboards.',
+      phrases: ['bi access','power bi access','power bi account','bi account','bi request'],
+      words: ['bi','powerbi'] },
+    { id: 'onetime-report', name: 'Request One-time Report', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=cba96577c28442b6a51f6fd96466c18e',
+      desc: 'Request a one-time data extract or standard report.',
+      phrases: ['one-time report','onetime report','data extract','standard report','one time report'],
+      words: ['extract','report'] },
+    { id: 'new-dashboard', name: 'New Dashboard / Report', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=667defb8f23e4502a1007d4530240bd4',
+      desc: 'Request development of a new custom dashboard or report.',
+      phrases: ['new dashboard','new report','custom dashboard','custom report','build dashboard','build report'],
+      words: [] },
+    { id: 'change-dashboard', name: 'Change Dashboard / Report', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=789beb28220b487281201e1aeffa6694',
+      desc: 'Request modifications to an existing dashboard or report.',
+      phrases: ['change dashboard','change report','modify dashboard','modify report','update dashboard','update report'],
+      words: [] },
+    { id: 'temp-reporting', name: 'Temporary Increased Reporting', category: 'Reporting & Analytics', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=cd3c6cd8acd94d09b0b115f483d0a1d2',
+      desc: 'Request temporarily higher reporting frequency or volume.',
+      phrases: ['temporary reporting','increased reporting','more frequent reporting','extra reporting'],
+      words: [] },
+    /* --- PRODUCT DEVELOPMENT --- */
+    { id: 'product-dev', name: 'Product Development Request', category: 'ECHO Product Support', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=b81f23ce5ecb460e9dc6347a2c87a3c0',
+      desc: 'Request new product development, enhancements, or major changes to existing applications.',
+      phrases: ['product development','new feature','feature request','enhancement','product change','major change'],
+      words: ['development','enhancement','feature'] }
   ];
 
   var GENERAL_SSP = { name: 'General Self-Service Portal', url: 'https://vanameyde.topdesk.net/tas/public/ssp/', desc: 'Browse all available forms on the SSP portal.' };
-  var WELCOME = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form.";
+  var WELCOME = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form. You can also ask me about SLA details, support hours, or priority levels.";
 
-  var state = 'idle'; // idle | chatting | disambiguating | routed
+  var state = 'idle';
   var disambiguationOptions = [];
   var failedAttempts = 0;
 
@@ -232,18 +567,25 @@ header { display: flex; align-items: center; justify-content: space-between; bac
   }
 
   function processInput(raw) {
-    var input = raw.toLowerCase().replace(/[^\w\s\/]/g, ' ').replace(/\s+/g, ' ').trim();
+    var input = raw.toLowerCase().replace(/[^\w\s\/\-]/g, ' ').replace(/\s+/g, ' ').trim();
 
     // Handle greetings
-    if (/^(hi|hello|hey|good morning|good afternoon|good evening|hoi|hallo)$/i.test(input)) {
+    if (/^(hi|hello|hey|good morning|good afternoon|good evening|hoi|hallo|goedemorgen)$/i.test(input)) {
       state = 'chatting';
-      addBotMessage("Hello! How can I help you today? Just describe what you need, for example: \"I need access to Foxit\" or \"my laptop is broken\".");
+      addBotMessage("Hello! How can I help you today? Just describe what you need, for example: \"I need access to Foxit\", \"my laptop is broken\", or ask about SLA details.");
       return;
     }
 
     // Handle thanks / goodbye
-    if (/^(thanks|thank you|bye|goodbye|cheers|bedankt|dank je)$/i.test(input)) {
+    if (/^(thanks|thank you|bye|goodbye|cheers|bedankt|dank je|dankjewel)$/i.test(input)) {
       addBotMessage("You're welcome! Feel free to start a new request any time.");
+      return;
+    }
+
+    // Check for SLA questions first
+    var slaAnswer = checkSLA(input);
+    if (slaAnswer) {
+      addBotMessage(slaAnswer);
       return;
     }
 
@@ -254,7 +596,6 @@ header { display: flex; align-items: center; justify-content: space-between; bac
         routeTo(disambiguationOptions[choice - 1]);
         return;
       }
-      // Also check if they typed something that clearly matches one option
       var reScored = scoreAll(input);
       var filtered = reScored.filter(function (s) {
         return disambiguationOptions.some(function (o) { return o.id === s.form.id; });
@@ -280,7 +621,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
         state = 'routed';
       } else {
         state = 'chatting';
-        addBotMessage("I'm not sure I understand. Could you describe your issue in more detail? For example: \"I need access to software\", \"something is broken\", or \"I need a new laptop\".");
+        addBotMessage("I'm not sure I understand. Could you describe your issue in more detail? For example: \"I need access to software\", \"something is broken\", \"I need a new laptop\", or \"what is the SLA for P1 incidents?\"");
       }
       return;
     }
@@ -291,19 +632,37 @@ header { display: flex; align-items: center; justify-content: space-between; bac
       return;
     }
 
-    // Ambiguous; show top options (up to 4)
-    var options = scored.filter(function (s) { return s.score > 0 && s.score >= top.score * 0.5; }).slice(0, 4);
+    // Ambiguous; show top options
+    var options = scored.filter(function (s) { return s.score > 0 && s.score >= top.score * 0.5; }).slice(0, 5);
     disambiguationOptions = options.map(function (s) { return s.form; });
     state = 'disambiguating';
 
     var msg = "I found a few forms that might match. Which one do you need?\n\n";
     disambiguationOptions.forEach(function (f, i) {
-      msg += (i + 1) + ". " + f.name;
-      if (f.restricted) msg += " (restricted)";
+      msg += (i + 1) + ". " + f.name + " (" + f.category + ")";
+      if (f.restricted) msg += " [restricted]";
       msg += "\n";
     });
     msg += "\nReply with the number of your choice.";
     addBotMessage(msg);
+  }
+
+  function checkSLA(input) {
+    var bestScore = 0;
+    var bestAnswer = null;
+    for (var i = 0; i < SLA.length; i++) {
+      var score = 0;
+      for (var j = 0; j < SLA[i].q.length; j++) {
+        if (input.indexOf(SLA[i].q[j]) !== -1) {
+          score += SLA[i].q[j].split(' ').length;
+        }
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        bestAnswer = SLA[i].a;
+      }
+    }
+    return bestScore > 0 ? bestAnswer : null;
   }
 
   function scoreAll(input) {
@@ -328,7 +687,6 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     addCtaCard(form.name, form.desc, form.url, form.restricted);
   }
 
-  // DOM helpers
   function addBotMessage(text) {
     var div = document.createElement('div');
     div.className = 'message bot';
