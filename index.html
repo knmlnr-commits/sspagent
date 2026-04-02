@@ -5,12 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Van Ameyde SSP Assistant</title>
 <style>
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --navy: #07017E;
   --turquoise: #00D8B9;
@@ -20,326 +15,38 @@
   --gray-light: #f4f4f6;
   --gray-mid: #ccc;
 }
-
-html, body {
-  height: 100%;
-  font-family: Verdana, Geneva, sans-serif;
-  color: var(--black);
-  background: var(--gray-light);
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  max-width: 780px;
-  margin: 0 auto;
-  background: var(--white);
-  box-shadow: 0 0 24px rgba(0,0,0,0.08);
-}
-
-/* Header */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--navy);
-  color: var(--white);
-  padding: 14px 20px;
-  flex-shrink: 0;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  background: var(--turquoise);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: bold;
-  font-size: 18px;
-  color: var(--navy);
-}
-
-.header-title {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 18px;
-  font-weight: normal;
-}
-
-.header-title span {
-  color: var(--turquoise);
-  margin-left: 6px;
-  font-size: 14px;
-  font-family: Verdana, Geneva, sans-serif;
-}
-
-#new-request-btn {
-  background: none;
-  border: 1px solid rgba(255,255,255,0.4);
-  color: var(--white);
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 12px;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-#new-request-btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* API Key bar */
-#api-key-bar {
-  padding: 10px 20px;
-  background: var(--misty-rose);
-  border-bottom: 1px solid var(--gray-mid);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-#api-key-bar.collapsed {
-  padding: 6px 20px;
-}
-
-#api-key-bar label {
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-#api-key-input {
-  flex: 1;
-  padding: 7px 10px;
-  border: 1px solid var(--gray-mid);
-  border-radius: 4px;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
-}
-
-#api-key-save {
-  background: var(--navy);
-  color: var(--white);
-  border: none;
-  padding: 7px 16px;
-  border-radius: 4px;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-#api-key-save:hover {
-  opacity: 0.9;
-}
-
-.api-key-status {
-  font-size: 12px;
-  color: var(--navy);
-  cursor: pointer;
-}
-
-.api-key-status:hover {
-  text-decoration: underline;
-}
-
-/* Chat area */
-#chat-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.message {
-  max-width: 80%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.55;
-  word-wrap: break-word;
-}
-
-.message.bot {
-  align-self: flex-start;
-  background: var(--navy);
-  color: var(--white);
-  border-bottom-left-radius: 4px;
-}
-
-.message.user {
-  align-self: flex-end;
-  background: var(--turquoise);
-  color: var(--black);
-  border-bottom-right-radius: 4px;
-}
-
-.message.error {
-  align-self: flex-start;
-  background: #fce4e4;
-  color: #a00;
-  border: 1px solid #f5bcbc;
-  border-bottom-left-radius: 4px;
-}
-
-/* CTA Card */
-.cta-card {
-  align-self: flex-start;
-  max-width: 80%;
-  background: var(--white);
-  border: 2px solid var(--navy);
-  border-radius: 12px;
-  padding: 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.cta-card .cta-title {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 16px;
-  color: var(--navy);
-  font-weight: bold;
-}
-
-.cta-card .cta-desc {
-  font-size: 13px;
-  color: #444;
-  line-height: 1.45;
-}
-
-.cta-card .cta-btn {
-  display: inline-block;
-  margin-top: 6px;
-  background: var(--navy);
-  color: var(--white);
-  text-decoration: none;
-  padding: 10px 22px;
-  border-radius: 6px;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  cursor: pointer;
-  border: none;
-  transition: opacity 0.2s;
-}
-
-.cta-card .cta-btn:hover {
-  opacity: 0.88;
-}
-
-.cta-card .start-over {
-  font-size: 12px;
-  color: var(--navy);
-  cursor: pointer;
-  background: none;
-  border: none;
-  text-decoration: underline;
-  font-family: Verdana, Geneva, sans-serif;
-  margin-top: 4px;
-  padding: 0;
-}
-
-/* Typing indicator */
-.typing-indicator {
-  align-self: flex-start;
-  display: flex;
-  gap: 5px;
-  padding: 12px 18px;
-  background: var(--navy);
-  border-radius: 12px;
-  border-bottom-left-radius: 4px;
-}
-
-.typing-indicator span {
-  width: 8px;
-  height: 8px;
-  background: rgba(255,255,255,0.6);
-  border-radius: 50%;
-  animation: typing-bounce 1.2s infinite;
-}
-
+html, body { height: 100%; font-family: Verdana, Geneva, sans-serif; color: var(--black); background: var(--gray-light); }
+#app { display: flex; flex-direction: column; height: 100vh; max-width: 780px; margin: 0 auto; background: var(--white); box-shadow: 0 0 24px rgba(0,0,0,0.08); }
+header { display: flex; align-items: center; justify-content: space-between; background: var(--navy); color: var(--white); padding: 14px 20px; flex-shrink: 0; }
+.header-left { display: flex; align-items: center; gap: 8px; }
+.logo-icon { width: 32px; height: 32px; background: var(--turquoise); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; font-weight: bold; font-size: 18px; color: var(--navy); }
+.header-title { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: normal; }
+.header-title span { color: var(--turquoise); margin-left: 6px; font-size: 14px; font-family: Verdana, Geneva, sans-serif; }
+#new-request-btn { background: none; border: 1px solid rgba(255,255,255,0.4); color: var(--white); font-family: Verdana, Geneva, sans-serif; font-size: 12px; padding: 5px 12px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+#new-request-btn:hover { background: rgba(255,255,255,0.15); }
+#chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.message { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.55; word-wrap: break-word; }
+.message.bot { align-self: flex-start; background: var(--navy); color: var(--white); border-bottom-left-radius: 4px; }
+.message.user { align-self: flex-end; background: var(--turquoise); color: var(--black); border-bottom-right-radius: 4px; }
+.cta-card { align-self: flex-start; max-width: 80%; background: var(--white); border: 2px solid var(--navy); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+.cta-card .cta-title { font-family: Georgia, 'Times New Roman', serif; font-size: 16px; color: var(--navy); font-weight: bold; }
+.cta-card .cta-desc { font-size: 13px; color: #444; line-height: 1.45; }
+.cta-card .cta-btn { display: inline-block; margin-top: 6px; background: var(--navy); color: var(--white); text-decoration: none; padding: 10px 22px; border-radius: 6px; font-family: Verdana, Geneva, sans-serif; font-size: 14px; font-weight: bold; text-align: center; cursor: pointer; border: none; transition: opacity 0.2s; }
+.cta-card .cta-btn:hover { opacity: 0.88; }
+.cta-card .start-over { font-size: 12px; color: var(--navy); cursor: pointer; background: none; border: none; text-decoration: underline; font-family: Verdana, Geneva, sans-serif; margin-top: 4px; padding: 0; }
+.cta-card .cta-warning { font-size: 12px; color: #b45309; background: #fef3c7; padding: 6px 10px; border-radius: 4px; margin-top: 2px; }
+.typing-indicator { align-self: flex-start; display: flex; gap: 5px; padding: 12px 18px; background: var(--navy); border-radius: 12px; border-bottom-left-radius: 4px; }
+.typing-indicator span { width: 8px; height: 8px; background: rgba(255,255,255,0.6); border-radius: 50%; animation: typing-bounce 1.2s infinite; }
 .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
 .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
-
-@keyframes typing-bounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
-}
-
-/* Input bar */
-#input-bar {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding: 12px 20px;
-  border-top: 1px solid #e0e0e0;
-  background: var(--white);
-  flex-shrink: 0;
-}
-
-#user-input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid var(--gray-mid);
-  border-radius: 8px;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 14px;
-  resize: none;
-  min-height: 42px;
-  max-height: 120px;
-  line-height: 1.4;
-}
-
-#user-input:focus {
-  outline: none;
-  border-color: var(--navy);
-}
-
-#send-btn {
-  background: var(--navy);
-  color: var(--white);
-  border: none;
-  width: 44px;
-  height: 42px;
-  border-radius: 8px;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: opacity 0.2s;
-}
-
-#send-btn:hover {
-  opacity: 0.88;
-}
-
-#send-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  .message { max-width: 90%; }
-  .cta-card { max-width: 90%; }
-  header { padding: 10px 14px; }
-  #chat-area { padding: 14px; }
-}
+@keyframes typing-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+#input-bar { display: flex; align-items: flex-end; gap: 10px; padding: 12px 20px; border-top: 1px solid #e0e0e0; background: var(--white); flex-shrink: 0; }
+#user-input { flex: 1; padding: 10px 14px; border: 1px solid var(--gray-mid); border-radius: 8px; font-family: Verdana, Geneva, sans-serif; font-size: 14px; resize: none; min-height: 42px; max-height: 120px; line-height: 1.4; }
+#user-input:focus { outline: none; border-color: var(--navy); }
+#send-btn { background: var(--navy); color: var(--white); border: none; width: 44px; height: 42px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity 0.2s; }
+#send-btn:hover { opacity: 0.88; }
+#send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+@media (max-width: 480px) { .message { max-width: 90%; } .cta-card { max-width: 90%; } header { padding: 10px 14px; } #chat-area { padding: 14px; } }
 </style>
 </head>
 <body>
@@ -351,264 +58,292 @@ header {
     </div>
     <button id="new-request-btn" aria-label="Start a new request">New request</button>
   </header>
-
-  <div id="api-key-bar">
-    <label for="api-key-input">API Key:</label>
-    <input type="password" id="api-key-input" placeholder="Enter your Anthropic API key" autocomplete="off" />
-    <button id="api-key-save" aria-label="Save API key">Connect</button>
-  </div>
-
   <div id="chat-area" role="log" aria-live="polite"></div>
-
   <div id="input-bar">
     <textarea id="user-input" rows="1" placeholder="Describe what you need help with..." aria-label="Type your message"></textarea>
-    <button id="send-btn" aria-label="Send message" disabled>&#9654;</button>
+    <button id="send-btn" aria-label="Send message">&#9654;</button>
   </div>
 </div>
-
 <script>
 (function () {
   'use strict';
 
-  const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-  const MODEL = 'claude-sonnet-4-20250514';
-  const SYSTEM_PROMPT = `You are the Van Ameyde SSP Assistant, a helpful routing bot for Van Ameyde employees.
-Your sole purpose is to understand what the employee needs and route them to the correct Self-Service Portal (SSP) form.
+  var FORMS = [
+    { id: 'incident', name: 'Report an Incident', category: 'General', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f',
+      desc: 'Report something that is broken or not working correctly.',
+      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access'],
+      words: ['incident','broken','error','crash','down','issue','problem','bug','fault','failure','outage','malfunction','slow','frozen','freeze','stuck','glitch','unresponsive'] },
+    { id: 'question', name: 'Ask a Question', category: 'General', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
+      desc: 'Ask a general IT question (not an incident).',
+      phrases: ['ask a question','general question','how do i','how to'],
+      words: ['question','wondering','guidance','info','information'] },
+    { id: 'existing-software', name: 'Request Access to Existing Software', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b',
+      desc: 'Request access to software such as Foxit, DocuSign, printers, file servers, or Office language packs.',
+      phrases: ['existing software','need access','grant access','access to foxit','access to docusign','language pack','file server','office language'],
+      words: ['foxit','docusign','printer','printers','access','permission','permissions','software'] },
+    { id: 'new-software', name: 'Request New Software', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d51bd395eb24961810fdedc5f7947d3',
+      desc: 'Request software that is not yet in use at Van Ameyde.',
+      phrases: ['new software','install software','new application','new tool','new program','software not available','software request'],
+      words: ['install','application'] },
+    { id: 'disable-account', name: 'Disable Van Ameyde Account', category: 'Access & Software', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b',
+      desc: 'Disable or remove an account (offboarding).',
+      phrases: ['disable account','remove account','deactivate account','delete account','end contract'],
+      words: ['offboarding','leaver','leaving','departure','deactivate','disable'] },
+    { id: 'email', name: 'Email / Mailbox / Distribution List', category: 'Communication', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f654f9fbb9124c439314e584b051e731',
+      desc: 'Create, modify, or delete a shared mailbox or distribution list.',
+      phrases: ['shared mailbox','distribution list','mailing list','mail group','new mailbox'],
+      words: ['email','mailbox','outlook','mail','distribution'] },
+    { id: 'sharepoint', name: 'SharePoint', category: 'Communication', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e22b5714210042f2b848adfd752224fa',
+      desc: 'Request access or changes to a SharePoint location.',
+      phrases: ['sharepoint access','sharepoint permission','share point','document library','team site','site access'],
+      words: ['sharepoint'] },
+    { id: 'av', name: 'A/V Configuration', category: 'Communication', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
+      desc: 'Audio/visual or meeting room setup and configuration.',
+      phrases: ['meeting room','conference room','teams room','audio visual','a/v config'],
+      words: ['audio','video','av','projector','display','screen','camera','microphone'] },
+    { id: 'cloudya', name: 'Cloudya (Telephony)', category: 'Communication', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
+      desc: 'Telephony; new account or configuration changes via Cloudya.',
+      phrases: ['call forwarding','phone number','phone extension'],
+      words: ['cloudya','telephony','phone','telephone','voip','extension'] },
+    { id: 'order-hardware', name: 'Order Hardware', category: 'Hardware & Devices', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7abd523c57f44959b8ae4286e8ae86d5',
+      desc: 'Order new hardware (shipping costs may be charged).',
+      phrases: ['order hardware','new laptop','new monitor','new keyboard','new mouse','new headset','new computer','new dock','docking station','buy hardware','purchase hardware','new device','new equipment','hardware order'],
+      words: ['laptop','monitor','keyboard','mouse','headset','dock','hardware','order','purchase'] },
+    { id: 'device-allocation', name: 'Device Allocation & Decommissioning', category: 'Hardware & Devices', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70aaef22a8284beda3701650351983a2',
+      desc: 'Assign or decommission a device.',
+      phrases: ['assign device','allocate device','return device','return laptop','return equipment','device allocation','recycle device','old device','old laptop'],
+      words: ['decommission','allocate','allocation','recycle'] },
+    { id: 'infra', name: 'Infrastructure Consultancy', category: 'Infrastructure', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60',
+      desc: 'Cloud, server, storage, or network advice and changes.',
+      phrases: ['virtual machine','disk space'],
+      words: ['infrastructure','cloud','server','storage','azure','aws','vm','capacity','database','hosting'] },
+    { id: 'network', name: 'Network Configuration', category: 'Infrastructure', restricted: false,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60',
+      desc: 'VPN, firewall, or network setup and changes.',
+      phrases: ['firewall rule','ip address'],
+      words: ['network','vpn','firewall','dns','port','proxy','connectivity','wifi','lan','wan','vlan'] },
+    { id: 'ims-access', name: 'IMS/FNOL Access Request', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2ea0f904d85243469c390ee4c8e77293',
+      desc: 'Request access to IMS or FNOL.',
+      phrases: ['ims access','fnol access','ims account','fnol account','ims request','fnol request'],
+      words: ['ims','fnol'] },
+    { id: 'ims-config', name: 'IMS/FNOL Configuration Change', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f75d042ed894468810f407b5f823648',
+      desc: 'Change configuration or settings in IMS/FNOL.',
+      phrases: ['ims config','fnol config','ims change','fnol change','ims configuration','fnol configuration','ims setting','fnol setting'],
+      words: [] },
+    { id: 'ims-template', name: 'IMS/FNOL Document Template', category: 'IMS/FNOL', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=eee1d11b36394599b457417efbb246cc',
+      desc: 'New or modified document templates for IMS/FNOL.',
+      phrases: ['ims template','fnol template','ims document','fnol document'],
+      words: [] },
+    { id: 'myclaim-access', name: 'MyClaim Access Request', category: 'MyClaim', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c658cd5f74543f2b43d1119792bb942',
+      desc: 'Request access to MyClaim.',
+      phrases: ['myclaim access','myclaim account','myclaim request','my claim access','my claim account'],
+      words: ['myclaim'] },
+    { id: 'myclaim-config', name: 'MyClaim Configuration Change', category: 'MyClaim', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0d38f6fbece544328c753bda3a3e8d38',
+      desc: 'Change configuration or settings in MyClaim.',
+      phrases: ['myclaim config','myclaim change','myclaim setting','myclaim configuration','my claim config','my claim change'],
+      words: [] },
+    { id: 'echo-client', name: 'ECHO Client/CA/CT Configuration', category: 'ECHO', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3ca18c0472f34b958bf02610aa3fdea9',
+      desc: 'Configure clients, claim administrators, or claim types in ECHO.',
+      phrases: ['echo client','echo ca','echo ct','claim administrator','claim type','echo configuration','echo config'],
+      words: ['echo'] },
+    { id: 'echo-calamity', name: 'ECHO Calamity Code', category: 'ECHO', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=221956cc3cfc4ea4865082e3f169c212',
+      desc: 'Set up or change calamity codes in ECHO.',
+      phrases: ['calamity code','echo calamity','storm code','disaster code'],
+      words: ['calamity'] },
+    { id: 'echo-template', name: 'ECHO Document Template', category: 'ECHO', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=54c5ce89788645ec827df389d5b388e1',
+      desc: 'New or modified document templates for ECHO.',
+      phrases: ['echo template','echo document','echo document template'],
+      words: ['template'] },
+    { id: 'echo-reassign', name: 'ECHO Re-assign Files / Access Request', category: 'ECHO', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70311135e86c4be59e3b42b2c2193300',
+      desc: 'Reassign files to different handlers in ECHO.',
+      phrases: ['reassign files','re-assign files','echo files','echo access','transfer files','move files'],
+      words: ['reassign','handler'] },
+    { id: 'echo-sanction', name: 'ECHO Release Party from Sanction list', category: 'ECHO', restricted: true,
+      url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=13c4b3a1a86e43f292adc6d2b94068ad',
+      desc: 'Release a party from the sanctions list in ECHO.',
+      phrases: ['sanction list','release party','echo sanction'],
+      words: ['sanction','sanctions','sanctioned'] }
+  ];
 
-RULES:
-1. Ask concise, friendly clarifying questions to understand the request. Never assume.
-2. Once confident, respond with a JSON block (and nothing else after it) in this format:
+  var GENERAL_SSP = { name: 'General Self-Service Portal', url: 'https://vanameyde.topdesk.net/tas/public/ssp/', desc: 'Browse all available forms on the SSP portal.' };
+  var WELCOME = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form.";
 
-{"route": true, "form_name": "...", "url": "...", "description": "..."}
+  var state = 'idle'; // idle | chatting | disambiguating | routed
+  var disambiguationOptions = [];
+  var failedAttempts = 0;
 
-3. If the user's request is truly ambiguous even after 2 clarifying questions, offer them the general SSP portal link as a fallback.
-4. Always address users warmly. Use "you" and keep language simple and clear.
-5. Never use dashes; use semicolons or commas instead.
-6. If a form is restricted (ECHO users only), warn the user before routing.
-7. Do not answer questions unrelated to IT service requests. Politely redirect.
+  var chatArea = document.getElementById('chat-area');
+  var userInput = document.getElementById('user-input');
+  var sendBtn = document.getElementById('send-btn');
+  var newRequestBtn = document.getElementById('new-request-btn');
 
-AVAILABLE FORMS (use these URLs exactly):
+  addBotMessage(WELCOME);
 
---- GENERAL ---
-- Report an Incident (something is broken/not working)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f
-
-- Ask a Question (general IT question, not an incident)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
-
-- General Self-Service Portal (browse all forms)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/
-
---- ACCESS & SOFTWARE ---
-- Request Access to Existing Software (file server, Foxit, DocuSign, printers, Office language packs)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b
-
-- Request New Software (software not yet in use at Van Ameyde)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=4d51bd395eb24961810fdedc5f7947d3
-
-- Disable Van Ameyde Account (offboarding, account removal)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=9b6060be48354d1f8607e5c3eee1552b
-
---- COMMUNICATION & COLLABORATION ---
-- Email / Mailbox / Distribution List (new shared mailbox or mailing list; modify or delete existing)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=f654f9fbb9124c439314e584b051e731
-
-- SharePoint (request access or changes to a SharePoint location)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=e22b5714210042f2b848adfd752224fa
-
-- A/V Configuration (audio/visual meeting room setup)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
-
-- Cloudya (telephony; new account or configuration changes)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68
-
---- HARDWARE & DEVICES ---
-- Order Hardware (new hardware; shipping costs charged; Restricted: authorized users only)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=7abd523c57f44959b8ae4286e8ae86d5
-
-- Device Allocation & Decommissioning (assign or decommission a device; Restricted: authorized users only)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70aaef22a8284beda3701650351983a2
-
---- INFRASTRUCTURE ---
-- Infrastructure Consultancy (cloud, server, storage, network advice or changes)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60
-
-- Network Configuration (VPN, firewall, network setup)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c02dcf873ff4951ad9eee9867c43a60
-
---- IMS / FNOL (Restricted: Authorized ECHO Users Only) ---
-- IMS/FNOL Access Request
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2ea0f904d85243469c390ee4c8e77293
-
-- IMS/FNOL Configuration Change
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2f75d042ed894468810f407b5f823648
-
-- IMS/FNOL Document Template (new or modified document templates)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=eee1d11b36394599b457417efbb246cc
-
---- MyClaim (Restricted: Authorized ECHO Users Only) ---
-- MyClaim Access Request
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=8c658cd5f74543f2b43d1119792bb942
-
-- MyClaim Configuration Change
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=0d38f6fbece544328c753bda3a3e8d38
-
---- ECHO R1 (Restricted: Authorized ECHO Users Only) ---
-- ECHO Client/CA/CT Configuration (configure clients, claim administrators, claim types)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=3ca18c0472f34b958bf02610aa3fdea9
-
-- ECHO Calamity Code (calamity code setup or changes)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=221956cc3cfc4ea4865082e3f169c212
-
-- ECHO Document Template (new or modified document templates)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=54c5ce89788645ec827df389d5b388e1
-
-- ECHO Re-assign Files / Access Request (reassign files to different handlers)
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=70311135e86c4be59e3b42b2c2193300
-
-- ECHO Release Party from Sanction-list
-  URL: https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=13c4b3a1a86e43f292adc6d2b94068ad`;
-
-  const GENERAL_SSP_URL = 'https://vanameyde.topdesk.net/tas/public/ssp/';
-  const WELCOME_MESSAGE = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form.";
-
-  let apiKey = '';
-  let conversationHistory = [];
-  let turnCount = 0;
-  let isWaiting = false;
-
-  // DOM elements
-  const chatArea = document.getElementById('chat-area');
-  const userInput = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
-  const apiKeyBar = document.getElementById('api-key-bar');
-  const apiKeyInput = document.getElementById('api-key-input');
-  const apiKeySave = document.getElementById('api-key-save');
-  const newRequestBtn = document.getElementById('new-request-btn');
-
-  // Initialize
-  addBotMessage(WELCOME_MESSAGE);
-  updateSendState();
-
-  // API key handling
-  apiKeySave.addEventListener('click', saveApiKey);
-  apiKeyInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); saveApiKey(); }
-  });
-
-  function saveApiKey() {
-    const key = apiKeyInput.value.trim();
-    if (!key) return;
-    apiKey = key;
-    apiKeyBar.classList.add('collapsed');
-    apiKeyBar.innerHTML = '<span class="api-key-status" tabindex="0" role="button" aria-label="Change API key">API key set. Click to change.</span>';
-    apiKeyBar.querySelector('.api-key-status').addEventListener('click', resetApiKeyBar);
-    updateSendState();
-    userInput.focus();
-  }
-
-  function resetApiKeyBar() {
-    apiKey = '';
-    apiKeyBar.classList.remove('collapsed');
-    apiKeyBar.innerHTML = '<label for="api-key-input">API Key:</label><input type="password" id="api-key-input" placeholder="Enter your Anthropic API key" autocomplete="off" /><button id="api-key-save" aria-label="Save API key">Connect</button>';
-    const newInput = document.getElementById('api-key-input');
-    const newSave = document.getElementById('api-key-save');
-    newInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); saveApiKey(); }
-    });
-    newSave.addEventListener('click', saveApiKey);
-    updateSendState();
-  }
-
-  // Send handling
-  sendBtn.addEventListener('click', sendMessage);
+  sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   });
   userInput.addEventListener('input', function () {
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    updateSendState();
   });
-
   newRequestBtn.addEventListener('click', resetConversation);
 
-  function updateSendState() {
-    sendBtn.disabled = !apiKey || !userInput.value.trim() || isWaiting;
-  }
-
   function resetConversation() {
-    conversationHistory = [];
-    turnCount = 0;
-    isWaiting = false;
+    state = 'idle';
+    disambiguationOptions = [];
+    failedAttempts = 0;
     chatArea.innerHTML = '';
-    addBotMessage(WELCOME_MESSAGE);
+    addBotMessage(WELCOME);
     userInput.value = '';
     userInput.style.height = 'auto';
-    updateSendState();
     userInput.focus();
   }
 
-  // Message rendering
+  function handleSend() {
+    var text = userInput.value.trim();
+    if (!text) return;
+    addUserMessage(text);
+    userInput.value = '';
+    userInput.style.height = 'auto';
+    showTyping();
+    setTimeout(function () { removeTyping(); processInput(text); }, 300);
+  }
+
+  function processInput(raw) {
+    var input = raw.toLowerCase().replace(/[^\w\s\/]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    // Handle greetings
+    if (/^(hi|hello|hey|good morning|good afternoon|good evening|hoi|hallo)$/i.test(input)) {
+      state = 'chatting';
+      addBotMessage("Hello! How can I help you today? Just describe what you need, for example: \"I need access to Foxit\" or \"my laptop is broken\".");
+      return;
+    }
+
+    // Handle thanks / goodbye
+    if (/^(thanks|thank you|bye|goodbye|cheers|bedankt|dank je)$/i.test(input)) {
+      addBotMessage("You're welcome! Feel free to start a new request any time.");
+      return;
+    }
+
+    // If disambiguating, check for a number choice
+    if (state === 'disambiguating' && disambiguationOptions.length > 0) {
+      var choice = parseInt(input);
+      if (choice >= 1 && choice <= disambiguationOptions.length) {
+        routeTo(disambiguationOptions[choice - 1]);
+        return;
+      }
+      // Also check if they typed something that clearly matches one option
+      var reScored = scoreAll(input);
+      var filtered = reScored.filter(function (s) {
+        return disambiguationOptions.some(function (o) { return o.id === s.form.id; });
+      });
+      if (filtered.length > 0 && filtered[0].score > 0) {
+        routeTo(filtered[0].form);
+        return;
+      }
+      addBotMessage("I didn't quite catch that. Please reply with a number (1 to " + disambiguationOptions.length + ") to select a form, or describe your request in more detail.");
+      return;
+    }
+
+    // Score all forms
+    var scored = scoreAll(input);
+    var top = scored[0];
+    var second = scored.length > 1 ? scored[1] : { score: 0 };
+
+    if (top.score === 0) {
+      failedAttempts++;
+      if (failedAttempts >= 2) {
+        addBotMessage("I'm having trouble finding the right form for you. Here's the general SSP portal where you can browse all available options.");
+        addCtaCard(GENERAL_SSP.name, GENERAL_SSP.desc, GENERAL_SSP.url, false);
+        state = 'routed';
+      } else {
+        state = 'chatting';
+        addBotMessage("I'm not sure I understand. Could you describe your issue in more detail? For example: \"I need access to software\", \"something is broken\", or \"I need a new laptop\".");
+      }
+      return;
+    }
+
+    // Clear winner
+    if (top.score > 0 && (second.score === 0 || top.score >= second.score * 1.5)) {
+      routeTo(top.form);
+      return;
+    }
+
+    // Ambiguous; show top options (up to 4)
+    var options = scored.filter(function (s) { return s.score > 0 && s.score >= top.score * 0.5; }).slice(0, 4);
+    disambiguationOptions = options.map(function (s) { return s.form; });
+    state = 'disambiguating';
+
+    var msg = "I found a few forms that might match. Which one do you need?\n\n";
+    disambiguationOptions.forEach(function (f, i) {
+      msg += (i + 1) + ". " + f.name;
+      if (f.restricted) msg += " (restricted)";
+      msg += "\n";
+    });
+    msg += "\nReply with the number of your choice.";
+    addBotMessage(msg);
+  }
+
+  function scoreAll(input) {
+    var results = FORMS.map(function (form) {
+      var score = 0;
+      form.phrases.forEach(function (phrase) {
+        if (input.indexOf(phrase) !== -1) score += 3;
+      });
+      form.words.forEach(function (word) {
+        var regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+        if (regex.test(input)) score += 1;
+      });
+      return { form: form, score: score };
+    });
+    results.sort(function (a, b) { return b.score - a.score; });
+    return results;
+  }
+
+  function routeTo(form) {
+    state = 'routed';
+    addBotMessage("Great, I've found the right form for you!");
+    addCtaCard(form.name, form.desc, form.url, form.restricted);
+  }
+
+  // DOM helpers
   function addBotMessage(text) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.className = 'message bot';
+    div.style.whiteSpace = 'pre-wrap';
     div.textContent = text;
     chatArea.appendChild(div);
     scrollToBottom();
   }
 
   function addUserMessage(text) {
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.className = 'message user';
     div.textContent = text;
     chatArea.appendChild(div);
     scrollToBottom();
-  }
-
-  function addErrorMessage(text) {
-    const div = document.createElement('div');
-    div.className = 'message error';
-    div.textContent = text;
-    chatArea.appendChild(div);
-    // Also show general SSP fallback
-    addCtaCard('General Self-Service Portal', 'Browse all available forms on the SSP portal.', GENERAL_SSP_URL);
-    scrollToBottom();
-  }
-
-  function addCtaCard(formName, description, url) {
-    const card = document.createElement('div');
-    card.className = 'cta-card';
-    card.innerHTML = '<div class="cta-title">\uD83D\uDD17 ' + escapeHtml(formName) + '</div>' +
-      '<div class="cta-desc">' + escapeHtml(description) + '</div>' +
-      '<a class="cta-btn" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" aria-label="Open ' + escapeHtml(formName) + ' form">OPEN FORM \u2192</a>' +
-      '<button class="start-over" aria-label="Start a new request">Start over</button>';
-    chatArea.appendChild(card);
-    card.querySelector('.start-over').addEventListener('click', resetConversation);
-    scrollToBottom();
-  }
-
-  function showTypingIndicator() {
-    const div = document.createElement('div');
-    div.className = 'typing-indicator';
-    div.id = 'typing-indicator';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    chatArea.appendChild(div);
-    scrollToBottom();
-  }
-
-  function removeTypingIndicator() {
-    const el = document.getElementById('typing-indicator');
-    if (el) el.remove();
-  }
-
-  function scrollToBottom() {
-    requestAnimationFrame(function () {
-      chatArea.scrollTop = chatArea.scrollHeight;
-    });
   }
 
   function escapeHtml(str) {
@@ -617,102 +352,38 @@ AVAILABLE FORMS (use these URLs exactly):
     return d.innerHTML;
   }
 
-  // Parse route JSON from response
-  function parseRouteJson(text) {
-    var regex = /\{[\s\S]*?"route"\s*:\s*true[\s\S]*?\}/;
-    var match = text.match(regex);
-    if (!match) return null;
-    try {
-      var parsed = JSON.parse(match[0]);
-      if (parsed.route === true && parsed.form_name && parsed.url) {
-        return {
-          json: parsed,
-          textBefore: text.substring(0, match.index).trim(),
-          textAfter: text.substring(match.index + match[0].length).trim()
-        };
-      }
-    } catch (e) {
-      // not valid JSON
+  function addCtaCard(name, desc, url, restricted) {
+    var card = document.createElement('div');
+    card.className = 'cta-card';
+    var html = '<div class="cta-title">\uD83D\uDD17 ' + escapeHtml(name) + '</div>' +
+      '<div class="cta-desc">' + escapeHtml(desc) + '</div>';
+    if (restricted) {
+      html += '<div class="cta-warning">Please note: this form is restricted to authorized users only.</div>';
     }
-    return null;
+    html += '<a class="cta-btn" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" aria-label="Open ' + escapeHtml(name) + ' form">OPEN FORM \u2192</a>' +
+      '<button class="start-over" aria-label="Start a new request">Start over</button>';
+    card.innerHTML = html;
+    chatArea.appendChild(card);
+    card.querySelector('.start-over').addEventListener('click', resetConversation);
+    scrollToBottom();
   }
 
-  // API call
-  async function sendMessage() {
-    var text = userInput.value.trim();
-    if (!text || !apiKey || isWaiting) return;
+  function showTyping() {
+    var div = document.createElement('div');
+    div.className = 'typing-indicator';
+    div.id = 'typing-indicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    chatArea.appendChild(div);
+    scrollToBottom();
+  }
 
-    addUserMessage(text);
-    conversationHistory.push({ role: 'user', content: text });
-    turnCount++;
+  function removeTyping() {
+    var el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+  }
 
-    userInput.value = '';
-    userInput.style.height = 'auto';
-    isWaiting = true;
-    updateSendState();
-    showTypingIndicator();
-
-    try {
-      var response = await fetch(ANTHROPIC_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: 1024,
-          system: SYSTEM_PROMPT,
-          messages: conversationHistory
-        })
-      });
-
-      removeTypingIndicator();
-
-      if (!response.ok) {
-        var errBody = '';
-        try { errBody = await response.text(); } catch (ignored) {}
-        throw new Error('API error (' + response.status + '): ' + (errBody || response.statusText));
-      }
-
-      var data = await response.json();
-      var assistantText = '';
-      if (data.content && data.content.length > 0) {
-        assistantText = data.content.map(function (b) { return b.text || ''; }).join('');
-      }
-
-      conversationHistory.push({ role: 'assistant', content: assistantText });
-
-      // Check for route JSON
-      var routeData = parseRouteJson(assistantText);
-      if (routeData) {
-        if (routeData.textBefore) {
-          addBotMessage(routeData.textBefore);
-        }
-        addCtaCard(routeData.json.form_name, routeData.json.description || '', routeData.json.url);
-      } else {
-        addBotMessage(assistantText);
-
-        // Fallback after 3 user turns without routing
-        if (turnCount >= 3) {
-          addBotMessage("It seems we haven't pinpointed the right form yet. Here's the general SSP portal where you can browse all available forms.");
-          addCtaCard('General Self-Service Portal', 'Browse all available forms on the SSP portal.', GENERAL_SSP_URL);
-          conversationHistory.push({
-            role: 'assistant',
-            content: "It seems we haven't pinpointed the right form yet. Here's the general SSP portal where you can browse all available forms."
-          });
-        }
-      }
-    } catch (err) {
-      removeTypingIndicator();
-      addErrorMessage('Something went wrong: ' + err.message + '. You can try the general SSP portal below.');
-    }
-
-    isWaiting = false;
-    updateSendState();
-    userInput.focus();
+  function scrollToBottom() {
+    requestAnimationFrame(function () { chatArea.scrollTop = chatArea.scrollHeight; });
   }
 })();
 </script>
