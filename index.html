@@ -137,7 +137,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     { id: 'incident', name: 'Report an Incident', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f',
       desc: 'Report something that is broken or not working correctly.',
-      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access','i have a problem','werkt niet','kan niet inloggen','wachtwoord vergeten','iets kapot','heb een probleem','inlog werkt niet','foutmelding','geeft een fout','doet het niet','kan niet opstarten','scherm bevroren','ne fonctionne pas','mot de passe','signaler un incident','jai un probleme','ne repond pas','ecran bloque','nao funciona','esta quebrado','senha','tenho um problema','nao consigo entrar','tela congelada','funktioniert nicht','passwort zurucksetzen','ich habe ein problem','geht nicht','kaputt','reagiert nicht','bildschirm eingefroren'],
+      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access','i have a problem','cant send email','cant send mail','email not working','cant open','cant connect','cant print','printer not working','teams not working','outlook not working','vpn not working','laptop not working','computer not working','screen not working','application not working','not responding','keeps crashing','wont start','wont open','werkt niet','kan niet inloggen','wachtwoord vergeten','iets kapot','heb een probleem','inlog werkt niet','foutmelding','geeft een fout','doet het niet','kan niet opstarten','scherm bevroren','kan niet mailen','kan niet printen','kan geen mail versturen','outlook werkt niet','teams werkt niet','printer werkt niet','vpn werkt niet','laptop werkt niet','kan niet openen','reageert niet','crasht steeds','start niet op','ne fonctionne pas','mot de passe','signaler un incident','jai un probleme','ne repond pas','ecran bloque','ne souvre pas','ne demarre pas','plante','nao funciona','esta quebrado','senha','tenho um problema','nao consigo entrar','tela congelada','nao consigo enviar','nao abre','nao inicia','funktioniert nicht','passwort zurucksetzen','ich habe ein problem','geht nicht','kaputt','reagiert nicht','bildschirm eingefroren','lasst sich nicht offnen','startet nicht','sturzt ab'],
       words: ['incident','broken','error','crash','down','issue','problem','bug','fault','failure','outage','malfunction','slow','frozen','freeze','stuck','glitch','unresponsive','kapot','storing','defect','fout','probleem','stuk','vastgelopen','traag','bevroren','panne','erreur','probleme','bloque','lent','erro','problema','defeito','lento','travado','fehler','absturz','ausfall','langsam','eingefroren','abgesturzt'] },
     { id: 'question', name: 'Ask a Question', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
@@ -841,6 +841,14 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 
   function scoreAll(input) {
     var inputWords = input.split(/\s+/);
+
+    // Detect if the user is describing a PROBLEM (not a request/change)
+    var problemIndicators = ['cant','cannot','can t','unable','not working','broken','doesnt work','doesnt','wont','stopped','failing','failed','impossible','lukt niet','werkt niet','kan niet','gaat niet','doet niet','kapot','stuk','defect','fout','storing','vastgelopen','kwijt','ne fonctionne pas','ne marche pas','ne repond pas','ne peut pas','impossible','casse','panne','plante','bloque','nao funciona','nao consigo','nao consegue','impossivel','avariado','partido','bloqueado','funktioniert nicht','geht nicht','kann nicht','kaputt','gesperrt','abgesturzt','reagiert nicht','fehlerhaft'];
+    var hasProblem = false;
+    for (var p = 0; p < problemIndicators.length; p++) {
+      if (input.indexOf(problemIndicators[p]) !== -1) { hasProblem = true; break; }
+    }
+
     var results = FORMS.map(function (form) {
       var score = 0;
       form.phrases.forEach(function (phrase) {
@@ -864,6 +872,18 @@ header { display: flex; align-items: center; justify-content: space-between; bac
           }
         }
       });
+
+      // Context-aware scoring: if user describes a PROBLEM, boost incident forms and penalize config/access forms
+      if (hasProblem && score > 0) {
+        if (form.id === 'incident' || form.id === 'echo-incident' || form.id === 'sap-incident' ||
+            form.id === 'rpa-incident' || form.id === 'simplifai-incident' || form.id === 'reporting-incident' ||
+            form.id === 'cyber-incident' || form.id === 'lost-stolen' || form.id === 'phishing') {
+          score += 3; // Big boost for incident/problem forms
+        } else if (form.category !== 'Security & Compliance') {
+          score = score * 0.4; // Reduce non-incident forms when problem language is detected
+        }
+      }
+
       return { form: form, score: score };
     });
     results.sort(function (a, b) { return b.score - a.score; });
