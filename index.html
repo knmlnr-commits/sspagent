@@ -19,7 +19,8 @@ html, body { height: 100%; font-family: Verdana, Geneva, sans-serif; color: var(
 #app { display: flex; flex-direction: column; height: 100vh; max-width: 780px; margin: 0 auto; background: var(--white); box-shadow: 0 0 24px rgba(0,0,0,0.08); }
 header { display: flex; align-items: center; justify-content: space-between; background: var(--navy); color: var(--white); padding: 14px 20px; flex-shrink: 0; }
 .header-left { display: flex; align-items: center; gap: 8px; }
-.logo-icon { width: 32px; height: 32px; background: var(--turquoise); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; font-weight: bold; font-size: 18px; color: var(--navy); }
+.logo-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.logo-icon img { width: 32px; height: 32px; }
 .header-title { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: normal; }
 .header-title span { color: var(--turquoise); margin-left: 6px; font-size: 14px; font-family: Verdana, Geneva, sans-serif; }
 .header-right { display: flex; align-items: center; gap: 10px; }
@@ -56,7 +57,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 <div id="app">
   <header>
     <div class="header-left">
-      <div class="logo-icon" aria-hidden="true">VA</div>
+      <div class="logo-icon" aria-hidden="true"><img src="VanAmeyde_icon.svg" alt="Van Ameyde"></div>
       <div class="header-title">Van Ameyde Systems<span>| SSP Assistant</span></div>
     </div>
     <div class="header-right">
