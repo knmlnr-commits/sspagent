@@ -48,6 +48,8 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 #send-btn:hover { opacity: 0.88; }
 #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 @media (max-width: 480px) { .message { max-width: 90%; } .cta-card { max-width: 90%; } header { padding: 10px 14px; } #chat-area { padding: 14px; } .header-right { gap: 4px; } }
+.footer-notice { background: var(--misty-rose); border-top: 1px solid var(--gray-mid); padding: 10px 20px; font-size: 11px; color: #555; line-height: 1.5; flex-shrink: 0; text-align: center; }
+.footer-notice strong { color: var(--navy); }
 </style>
 </head>
 <body>
@@ -67,6 +69,9 @@ header { display: flex; align-items: center; justify-content: space-between; bac
   <div id="input-bar">
     <textarea id="user-input" rows="1" placeholder="Describe what you need help with..." aria-label="Type your message"></textarea>
     <button id="send-btn" aria-label="Send message">&#9654;</button>
+  </div>
+  <div class="footer-notice">
+    <strong>Please note:</strong> This assistant does not authenticate users. Some forms may require specific SSP authorization levels to access. If a link does not open or you see an access denied message, please contact the <a href="mailto:vasservicedeliveryteam@vanameyde.com" style="color:#07017E;">Service Delivery Team</a> to verify your SSP permissions.
   </div>
 </div>
 <script>
