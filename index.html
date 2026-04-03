@@ -137,8 +137,8 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     { id: 'incident', name: 'Report an Incident', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=2b30322e59984f4ba3fad7804ac1599f',
       desc: 'Report something that is broken or not working correctly.',
-      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access','i have a problem','werkt niet','kan niet inloggen','wachtwoord vergeten','iets kapot','heb een probleem','ne fonctionne pas','mot de passe','signaler un incident','jai un probleme','nao funciona','esta quebrado','senha','tenho um problema','funktioniert nicht','passwort zurucksetzen','ich habe ein problem','geht nicht','kaputt'],
-      words: ['incident','broken','error','crash','down','issue','problem','bug','fault','failure','outage','malfunction','slow','frozen','freeze','stuck','glitch','unresponsive','kapot','storing','defect','fout','probleem','panne','erreur','probleme','erro','problema','defeito','fehler','absturz','ausfall','langsam'] },
+      phrases: ['report incident','something broken','not working','blue screen','locked out','cant login','cannot login','cant access','password reset','cannot access','i have a problem','werkt niet','kan niet inloggen','wachtwoord vergeten','iets kapot','heb een probleem','inlog werkt niet','foutmelding','geeft een fout','doet het niet','kan niet opstarten','scherm bevroren','ne fonctionne pas','mot de passe','signaler un incident','jai un probleme','ne repond pas','ecran bloque','nao funciona','esta quebrado','senha','tenho um problema','nao consigo entrar','tela congelada','funktioniert nicht','passwort zurucksetzen','ich habe ein problem','geht nicht','kaputt','reagiert nicht','bildschirm eingefroren'],
+      words: ['incident','broken','error','crash','down','issue','problem','bug','fault','failure','outage','malfunction','slow','frozen','freeze','stuck','glitch','unresponsive','kapot','storing','defect','fout','probleem','stuk','vastgelopen','traag','bevroren','panne','erreur','probleme','bloque','lent','erro','problema','defeito','lento','travado','fehler','absturz','ausfall','langsam','eingefroren','abgesturzt'] },
     { id: 'question', name: 'Ask a Question', category: 'My Workplace', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=bd8c2dae2c094ca49369bb2091522f68',
       desc: 'Ask a general IT question (not an incident).',
@@ -210,8 +210,8 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     { id: 'block-account', name: '(Un)Block Van Ameyde Account', category: 'VA Account Management', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=1c3925048d5b4d6b8a3160faab3a25f1',
       desc: 'Request blocking or unblocking of a Van Ameyde account.',
-      phrases: ['block account','unblock account','blocked account','account blocked','account suspended','suspend account','account blokkeren','account deblokkeren','bloquer compte','debloquer compte','bloquear conta','desbloquear conta','konto sperren','konto entsperren'],
-      words: ['block','unblock','suspend','suspended','blokkeren','deblokkeren','geblokkeerd','bloquer','debloquer','bloque','bloquear','desbloquear','bloqueado','sperren','entsperren','gesperrt'] },
+      phrases: ['block account','unblock account','blocked account','account blocked','account suspended','suspend account','account blokkeren','account deblokkeren','kan niet inloggen','account geblokkeerd','bloquer compte','debloquer compte','compte bloque','broquear conta','desbloquear conta','conta bloqueada','konto sperren','konto entsperren','konto gesperrt'],
+      words: ['block','unblock','suspend','suspended','locked','blokkeren','deblokkeren','geblokkeerd','vergrendeld','bloquer','debloquer','bloque','verrouille','bloquear','desbloquear','bloqueado','sperren','entsperren','gesperrt'] },
     /* --- INFRASTRUCTURE & NETWORKS --- */
     { id: 'network', name: 'Network Configuration', category: 'Infrastructure & Networks', restricted: false,
       url: 'https://vanameyde.topdesk.net/tas/public/ssp/content/serviceflow?unid=266f9400-3503-48e6-9b31-a5a9da298154',
@@ -622,13 +622,36 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 
     if (top.score === 0) {
       failedAttempts++;
-      if (failedAttempts >= 2) {
+      if (failedAttempts >= 3) {
         addBotMessage("I'm having trouble finding the right form for you. Here's the general SSP portal where you can browse all available options.");
         addCtaCard(GENERAL_SSP.name, GENERAL_SSP.desc, GENERAL_SSP.url, false);
         state = 'routed';
       } else {
         state = 'chatting';
-        addBotMessage("I'm not sure I understand. Could you describe your issue in more detail? For example: \"I need access to software\", \"something is broken\", \"I need a new laptop\", or \"what is the SLA for P1 incidents?\"");
+        addBotMessage(getFollowUpQuestion(input, failedAttempts));
+      }
+      return;
+    }
+
+    // Weak match (score too low to be confident); ask a follow-up
+    if (top.score > 0 && top.score < 1 && failedAttempts < 2) {
+      failedAttempts++;
+      state = 'chatting';
+      // Show what we think it might be, but ask to confirm
+      var guesses = scored.filter(function(s) { return s.score > 0; }).slice(0, 3);
+      if (guesses.length === 1) {
+        addBotMessage("It sounds like you might need: \"" + guesses[0].form.name + "\". Is that correct? If not, could you tell me a bit more about what you're experiencing?");
+      } else if (guesses.length > 1) {
+        var msg = "I have a few ideas based on your description. Could you tell me which area this is about?\n\n";
+        guesses.forEach(function(g, i) {
+          msg += (i + 1) + ". " + g.form.name + " (" + g.form.category + ")\n";
+        });
+        msg += "\nOr describe your issue in a bit more detail and I'll find the right form.";
+        disambiguationOptions = guesses.map(function(g) { return g.form; });
+        state = 'disambiguating';
+        addBotMessage(msg);
+      } else {
+        addBotMessage(getFollowUpQuestion(input, failedAttempts));
       }
       return;
     }
@@ -654,6 +677,34 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     addBotMessage(msg);
   }
 
+  function getFollowUpQuestion(input, attempt) {
+    // Detect broad category hints and ask targeted follow-ups
+    var hints = [
+      { patterns: ['login','inlog','wachtwoord','password','mot de passe','senha','passwort','aanmelden','connecter','entrar','anmelden','toegang','acces','acesso','zugang'],
+        question: "I'd like to help! Could you tell me more?\n\n1. Is something broken or showing an error? (incident)\n2. Do you need access to a specific application?\n3. Do you need your password reset?\n4. Is your account blocked or locked?" },
+      { patterns: ['fout','error','erreur','erro','fehler','melding','message','probleem','probleme','problema','problem','werkt','marche','funciona','funktioniert','kapot','panne','kaputt'],
+        question: "I see you're having an issue. To find the right form, could you tell me:\n\n1. Which application or system is affected? (e.g. ECHO, SAP, email, laptop)\n2. Is it completely down or partially working?\n3. How many people are affected?" },
+      { patterns: ['nieuw','nouveau','novo','neu','new','aanvragen','demander','solicitar','beantragen','bestellen','commander','encomendar','bestellen'],
+        question: "It sounds like you want to request something new. What kind of request is it?\n\n1. New software or access to existing software\n2. New hardware (laptop, monitor, etc.)\n3. New employee account\n4. Something else" },
+      { patterns: ['wijzigen','changer','alterar','andern','change','modify','update','aanpassen','modifier','modificar','anpassen'],
+        question: "You'd like to change something. What needs to be changed?\n\n1. A user account\n2. Software or application settings\n3. Network or infrastructure configuration\n4. Something else" }
+    ];
+
+    for (var i = 0; i < hints.length; i++) {
+      for (var j = 0; j < hints[i].patterns.length; j++) {
+        if (input.indexOf(hints[i].patterns[j]) !== -1) {
+          return hints[i].question;
+        }
+      }
+    }
+
+    // Generic follow-up based on attempt number
+    if (attempt <= 1) {
+      return "I'd like to help you find the right form. Could you describe your issue in a bit more detail? For example:\n\n; What application or system is involved?\n; Is something broken, or do you need something new?\n; Do you need access, a change, or want to report a problem?";
+    }
+    return "I'm still not sure which form you need. Try one of these:\n\n; \"My email is not working\" (incident)\n; \"I need access to Foxit\" (software access)\n; \"I need a new laptop\" (hardware)\n; \"I want to report phishing\" (security)\n\nOr type a specific application name like SAP, ECHO, SharePoint, etc.";
+  }
+
   function checkSLA(input) {
     var bestScore = 0;
     var bestAnswer = null;
@@ -673,14 +724,29 @@ header { display: flex; align-items: center; justify-content: space-between; bac
   }
 
   function scoreAll(input) {
+    var inputWords = input.split(/\s+/);
     var results = FORMS.map(function (form) {
       var score = 0;
       form.phrases.forEach(function (phrase) {
         if (input.indexOf(phrase) !== -1) score += 3;
       });
       form.words.forEach(function (word) {
-        var regex = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
-        if (regex.test(input)) score += 1;
+        var escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // Exact word boundary match = 1 point
+        if (new RegExp('\\b' + escaped + '\\b').test(input)) {
+          score += 1;
+        // Substring match (for compound words like foutmelding->fout, inloggen->inlog) = 0.5 points
+        } else if (input.indexOf(word) !== -1) {
+          score += 0.5;
+        // Also check if any input word is contained in the keyword (e.g. "login" matches "cant login")
+        } else {
+          for (var i = 0; i < inputWords.length; i++) {
+            if (inputWords[i].length >= 3 && word.indexOf(inputWords[i]) !== -1) {
+              score += 0.3;
+              break;
+            }
+          }
+        }
       });
       return { form: form, score: score };
     });
