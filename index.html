@@ -529,18 +529,141 @@ header { display: flex; align-items: center; justify-content: space-between; bac
   ];
 
   var GENERAL_SSP = { name: 'General Self-Service Portal', url: 'https://vanameyde.topdesk.net/tas/public/ssp/', desc: 'Browse all available forms on the SSP portal.' };
-  var WELCOME = "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form. You can also ask me about SLA details, support hours, or priority levels.";
+
+  /* ===== MULTILINGUAL STRINGS ===== */
+  var LANG = {
+    en: {
+      welcome: "Hi there! I'm your SSP Assistant. Tell me what you need help with and I'll send you straight to the right form. You can also ask me about SLA details, support hours, or priority levels.",
+      greeting: "Hello! How can I help you today? Just describe what you need, for example: \"I need access to Foxit\", \"my laptop is broken\", or ask about SLA details.",
+      goodbye: "You're welcome! Feel free to start a new request any time.",
+      found: "Great, I've found the right form for you!",
+      disambig: "I found a few forms that might match. Which one do you need?\n\n",
+      disambigEnd: "\nReply with the number of your choice.",
+      disambigRetry: "I didn't quite catch that. Please reply with a number (1 to {n}) to select a form, or describe your request in more detail.",
+      weakSingle: "It sounds like you might need: \"{name}\". Is that correct? If not, could you tell me a bit more about what you're experiencing?",
+      weakMulti: "I have a few ideas based on your description. Could you tell me which area this is about?\n\n",
+      weakMultiEnd: "\nOr describe your issue in a bit more detail and I'll find the right form.",
+      fallback: "I'm having trouble finding the right form for you. Here's the general SSP portal where you can browse all available options.",
+      hintLogin: "I'd like to help! Could you tell me more?\n\n1. Is something broken or showing an error? (incident)\n2. Do you need access to a specific application?\n3. Do you need your password reset?\n4. Is your account blocked or locked?",
+      hintError: "I see you're having an issue. To find the right form, could you tell me:\n\n1. Which application or system is affected? (e.g. ECHO, SAP, email, laptop)\n2. Is it completely down or partially working?\n3. How many people are affected?",
+      hintNew: "It sounds like you want to request something new. What kind of request is it?\n\n1. New software or access to existing software\n2. New hardware (laptop, monitor, etc.)\n3. New employee account\n4. Something else",
+      hintChange: "You'd like to change something. What needs to be changed?\n\n1. A user account\n2. Software or application settings\n3. Network or infrastructure configuration\n4. Something else",
+      generic1: "I'd like to help you find the right form. Could you describe your issue in a bit more detail? For example:\n\n; What application or system is involved?\n; Is something broken, or do you need something new?\n; Do you need access, a change, or want to report a problem?",
+      generic2: "I'm still not sure which form you need. Try one of these:\n\n; \"My email is not working\" (incident)\n; \"I need access to Foxit\" (software access)\n; \"I need a new laptop\" (hardware)\n; \"I want to report phishing\" (security)\n\nOr type a specific application name like SAP, ECHO, SharePoint, etc."
+    },
+    nl: {
+      welcome: "Hoi! Ik ben je SSP Assistent. Vertel me waar je hulp bij nodig hebt en ik stuur je direct naar het juiste formulier. Je kunt me ook vragen stellen over de SLA, supporttijden of prioriteiten.",
+      greeting: "Hallo! Hoe kan ik je helpen? Beschrijf wat je nodig hebt, bijvoorbeeld: \"Ik heb toegang nodig tot Foxit\", \"mijn laptop is kapot\", of stel een vraag over de SLA.",
+      goodbye: "Graag gedaan! Je kunt altijd een nieuw verzoek starten.",
+      found: "Top, ik heb het juiste formulier voor je gevonden!",
+      disambig: "Ik heb een paar formulieren gevonden die mogelijk passen. Welke heb je nodig?\n\n",
+      disambigEnd: "\nAntwoord met het nummer van je keuze.",
+      disambigRetry: "Dat heb ik niet helemaal begrepen. Antwoord met een nummer (1 tot {n}) om een formulier te kiezen, of beschrijf je verzoek in meer detail.",
+      weakSingle: "Het lijkt erop dat je dit nodig hebt: \"{name}\". Klopt dat? Zo niet, kun je me iets meer vertellen over je situatie?",
+      weakMulti: "Ik heb een paar idee\u00ebn op basis van je beschrijving. Over welk onderwerp gaat het?\n\n",
+      weakMultiEnd: "\nOf beschrijf je probleem in iets meer detail zodat ik het juiste formulier kan vinden.",
+      fallback: "Het lukt me niet om het juiste formulier te vinden. Hier is het algemene SSP portaal waar je alle beschikbare formulieren kunt bekijken.",
+      hintLogin: "Ik wil je graag helpen! Kun je me meer vertellen?\n\n1. Is er iets kapot of geeft het een foutmelding? (storing)\n2. Heb je toegang nodig tot een specifieke applicatie?\n3. Moet je wachtwoord gereset worden?\n4. Is je account geblokkeerd of vergrendeld?",
+      hintError: "Ik zie dat je een probleem hebt. Om het juiste formulier te vinden, kun je me vertellen:\n\n1. Welke applicatie of systeem is getroffen? (bijv. ECHO, SAP, e-mail, laptop)\n2. Werkt het helemaal niet of gedeeltelijk?\n3. Hoeveel mensen zijn getroffen?",
+      hintNew: "Het lijkt erop dat je iets nieuws wilt aanvragen. Wat voor soort aanvraag is het?\n\n1. Nieuwe software of toegang tot bestaande software\n2. Nieuwe hardware (laptop, scherm, etc.)\n3. Nieuw medewerker account\n4. Iets anders",
+      hintChange: "Je wilt iets wijzigen. Wat moet er veranderd worden?\n\n1. Een gebruikersaccount\n2. Software of applicatie-instellingen\n3. Netwerk of infrastructuur configuratie\n4. Iets anders",
+      generic1: "Ik wil je graag helpen het juiste formulier te vinden. Kun je je probleem iets uitgebreider beschrijven? Bijvoorbeeld:\n\n; Welke applicatie of systeem betreft het?\n; Is er iets kapot, of heb je iets nieuws nodig?\n; Heb je toegang nodig, een wijziging, of wil je een probleem melden?",
+      generic2: "Ik weet nog niet zeker welk formulier je nodig hebt. Probeer een van deze:\n\n; \"Mijn e-mail werkt niet\" (storing)\n; \"Ik heb toegang nodig tot Foxit\" (software)\n; \"Ik heb een nieuwe laptop nodig\" (hardware)\n; \"Ik wil phishing melden\" (beveiliging)\n\nOf typ een specifieke applicatienaam zoals SAP, ECHO, SharePoint, etc."
+    },
+    fr: {
+      welcome: "Bonjour ! Je suis votre assistant SSP. Dites-moi ce dont vous avez besoin et je vous dirigerai vers le bon formulaire. Vous pouvez aussi me poser des questions sur le SLA, les horaires de support ou les niveaux de priorit\u00e9.",
+      greeting: "Bonjour ! Comment puis-je vous aider ? D\u00e9crivez ce dont vous avez besoin, par exemple : \"J'ai besoin d'acc\u00e8s \u00e0 Foxit\", \"mon ordinateur ne fonctionne pas\", ou posez une question sur le SLA.",
+      goodbye: "De rien ! N'h\u00e9sitez pas \u00e0 lancer une nouvelle demande \u00e0 tout moment.",
+      found: "Parfait, j'ai trouv\u00e9 le bon formulaire pour vous !",
+      disambig: "J'ai trouv\u00e9 plusieurs formulaires qui pourraient correspondre. Lequel vous faut-il ?\n\n",
+      disambigEnd: "\nR\u00e9pondez avec le num\u00e9ro de votre choix.",
+      disambigRetry: "Je n'ai pas bien compris. Veuillez r\u00e9pondre avec un num\u00e9ro (1 \u00e0 {n}) pour choisir un formulaire, ou d\u00e9crivez votre demande plus en d\u00e9tail.",
+      weakSingle: "Il semble que vous ayez besoin de : \"{name}\". Est-ce correct ? Sinon, pourriez-vous m'en dire un peu plus ?",
+      weakMulti: "J'ai quelques id\u00e9es bas\u00e9es sur votre description. De quel domaine s'agit-il ?\n\n",
+      weakMultiEnd: "\nOu d\u00e9crivez votre probl\u00e8me plus en d\u00e9tail pour que je trouve le bon formulaire.",
+      fallback: "Je n'arrive pas \u00e0 trouver le bon formulaire. Voici le portail SSP g\u00e9n\u00e9ral o\u00f9 vous pouvez consulter tous les formulaires disponibles.",
+      hintLogin: "Je voudrais vous aider ! Pouvez-vous m'en dire plus ?\n\n1. Quelque chose est cass\u00e9 ou affiche une erreur ? (incident)\n2. Avez-vous besoin d'acc\u00e8s \u00e0 une application sp\u00e9cifique ?\n3. Avez-vous besoin de r\u00e9initialiser votre mot de passe ?\n4. Votre compte est-il bloqu\u00e9 ou verrouill\u00e9 ?",
+      hintError: "Je vois que vous avez un probl\u00e8me. Pour trouver le bon formulaire, pouvez-vous me dire :\n\n1. Quelle application ou syst\u00e8me est affect\u00e9 ? (ex. ECHO, SAP, email, laptop)\n2. Est-ce compl\u00e8tement en panne ou partiellement fonctionnel ?\n3. Combien de personnes sont affect\u00e9es ?",
+      hintNew: "Il semble que vous vouliez demander quelque chose de nouveau. De quel type de demande s'agit-il ?\n\n1. Nouveau logiciel ou acc\u00e8s \u00e0 un logiciel existant\n2. Nouveau mat\u00e9riel (ordinateur portable, \u00e9cran, etc.)\n3. Nouveau compte employ\u00e9\n4. Autre chose",
+      hintChange: "Vous souhaitez modifier quelque chose. Que faut-il changer ?\n\n1. Un compte utilisateur\n2. Param\u00e8tres logiciels ou applications\n3. Configuration r\u00e9seau ou infrastructure\n4. Autre chose",
+      generic1: "Je voudrais vous aider \u00e0 trouver le bon formulaire. Pourriez-vous d\u00e9crire votre probl\u00e8me plus en d\u00e9tail ? Par exemple :\n\n; Quelle application ou syst\u00e8me est concern\u00e9 ?\n; Quelque chose est cass\u00e9, ou avez-vous besoin de quelque chose de nouveau ?\n; Avez-vous besoin d'un acc\u00e8s, d'une modification, ou voulez-vous signaler un probl\u00e8me ?",
+      generic2: "Je ne suis toujours pas s\u00fbr du formulaire dont vous avez besoin. Essayez :\n\n; \"Mon email ne fonctionne pas\" (incident)\n; \"J'ai besoin d'acc\u00e8s \u00e0 Foxit\" (logiciel)\n; \"J'ai besoin d'un nouveau laptop\" (mat\u00e9riel)\n; \"Je veux signaler du phishing\" (s\u00e9curit\u00e9)\n\nOu tapez un nom d'application sp\u00e9cifique comme SAP, ECHO, SharePoint, etc."
+    },
+    pt: {
+      welcome: "Ol\u00e1! Sou o seu assistente SSP. Diga-me o que precisa e eu encaminho-o para o formul\u00e1rio correto. Tamb\u00e9m pode perguntar-me sobre o SLA, hor\u00e1rios de suporte ou n\u00edveis de prioridade.",
+      greeting: "Ol\u00e1! Como posso ajudar? Descreva o que precisa, por exemplo: \"Preciso de acesso ao Foxit\", \"o meu port\u00e1til n\u00e3o funciona\", ou pergunte sobre o SLA.",
+      goodbye: "De nada! Pode iniciar um novo pedido a qualquer momento.",
+      found: "\u00d3timo, encontrei o formul\u00e1rio certo para si!",
+      disambig: "Encontrei alguns formul\u00e1rios que podem corresponder. Qual precisa?\n\n",
+      disambigEnd: "\nResponda com o n\u00famero da sua escolha.",
+      disambigRetry: "N\u00e3o percebi bem. Responda com um n\u00famero (1 a {n}) para escolher um formul\u00e1rio, ou descreva o seu pedido com mais detalhe.",
+      weakSingle: "Parece que pode precisar de: \"{name}\". Est\u00e1 correto? Se n\u00e3o, pode dizer-me mais sobre a sua situa\u00e7\u00e3o?",
+      weakMulti: "Tenho algumas ideias com base na sua descri\u00e7\u00e3o. Sobre que \u00e1rea se trata?\n\n",
+      weakMultiEnd: "\nOu descreva o seu problema com mais detalhe para que eu encontre o formul\u00e1rio certo.",
+      fallback: "N\u00e3o estou a conseguir encontrar o formul\u00e1rio certo. Aqui est\u00e1 o portal SSP geral onde pode ver todos os formul\u00e1rios dispon\u00edveis.",
+      hintLogin: "Quero ajudar! Pode dizer-me mais?\n\n1. Algo est\u00e1 avariado ou mostra um erro? (incidente)\n2. Precisa de acesso a uma aplica\u00e7\u00e3o espec\u00edfica?\n3. Precisa de repor a sua palavra-passe?\n4. A sua conta est\u00e1 bloqueada?",
+      hintError: "Vejo que tem um problema. Para encontrar o formul\u00e1rio certo, pode dizer-me:\n\n1. Que aplica\u00e7\u00e3o ou sistema \u00e9 afetado? (ex. ECHO, SAP, email, port\u00e1til)\n2. Est\u00e1 completamente em baixo ou parcialmente a funcionar?\n3. Quantas pessoas s\u00e3o afetadas?",
+      hintNew: "Parece que quer pedir algo novo. Que tipo de pedido \u00e9?\n\n1. Novo software ou acesso a software existente\n2. Novo hardware (port\u00e1til, monitor, etc.)\n3. Nova conta de funcion\u00e1rio\n4. Outra coisa",
+      hintChange: "Quer alterar algo. O que precisa de ser alterado?\n\n1. Uma conta de utilizador\n2. Defini\u00e7\u00f5es de software ou aplica\u00e7\u00e3o\n3. Configura\u00e7\u00e3o de rede ou infraestrutura\n4. Outra coisa",
+      generic1: "Quero ajud\u00e1-lo a encontrar o formul\u00e1rio certo. Pode descrever o seu problema com mais detalhe? Por exemplo:\n\n; Que aplica\u00e7\u00e3o ou sistema est\u00e1 envolvido?\n; Algo est\u00e1 avariado, ou precisa de algo novo?\n; Precisa de acesso, uma altera\u00e7\u00e3o, ou quer reportar um problema?",
+      generic2: "Ainda n\u00e3o tenho a certeza de qual formul\u00e1rio precisa. Tente:\n\n; \"O meu email n\u00e3o funciona\" (incidente)\n; \"Preciso de acesso ao Foxit\" (software)\n; \"Preciso de um novo port\u00e1til\" (hardware)\n; \"Quero reportar phishing\" (seguran\u00e7a)\n\nOu escreva o nome de uma aplica\u00e7\u00e3o espec\u00edfica como SAP, ECHO, SharePoint, etc."
+    },
+    de: {
+      welcome: "Hallo! Ich bin Ihr SSP-Assistent. Sagen Sie mir, wobei Sie Hilfe ben\u00f6tigen, und ich leite Sie zum richtigen Formular weiter. Sie k\u00f6nnen mich auch zu SLA-Details, Supportzeiten oder Priorit\u00e4ten befragen.",
+      greeting: "Hallo! Wie kann ich Ihnen helfen? Beschreiben Sie, was Sie brauchen, z.B.: \"Ich brauche Zugang zu Foxit\", \"mein Laptop funktioniert nicht\", oder fragen Sie nach SLA-Details.",
+      goodbye: "Gern geschehen! Sie k\u00f6nnen jederzeit eine neue Anfrage starten.",
+      found: "Super, ich habe das richtige Formular f\u00fcr Sie gefunden!",
+      disambig: "Ich habe einige Formulare gefunden, die passen k\u00f6nnten. Welches ben\u00f6tigen Sie?\n\n",
+      disambigEnd: "\nAntworten Sie mit der Nummer Ihrer Wahl.",
+      disambigRetry: "Das habe ich nicht ganz verstanden. Bitte antworten Sie mit einer Nummer (1 bis {n}), um ein Formular auszuw\u00e4hlen, oder beschreiben Sie Ihre Anfrage genauer.",
+      weakSingle: "Es klingt so, als ob Sie Folgendes ben\u00f6tigen: \"{name}\". Stimmt das? Wenn nicht, k\u00f6nnen Sie mir etwas mehr \u00fcber Ihre Situation erz\u00e4hlen?",
+      weakMulti: "Ich habe einige Ideen basierend auf Ihrer Beschreibung. Um welchen Bereich geht es?\n\n",
+      weakMultiEnd: "\nOder beschreiben Sie Ihr Problem etwas genauer, damit ich das richtige Formular finde.",
+      fallback: "Es f\u00e4llt mir schwer, das richtige Formular zu finden. Hier ist das allgemeine SSP-Portal, wo Sie alle verf\u00fcgbaren Formulare durchsuchen k\u00f6nnen.",
+      hintLogin: "Ich m\u00f6chte Ihnen helfen! K\u00f6nnen Sie mir mehr erz\u00e4hlen?\n\n1. Ist etwas kaputt oder zeigt einen Fehler? (St\u00f6rung)\n2. Ben\u00f6tigen Sie Zugang zu einer bestimmten Anwendung?\n3. M\u00fcssen Sie Ihr Passwort zur\u00fccksetzen?\n4. Ist Ihr Konto gesperrt oder blockiert?",
+      hintError: "Ich sehe, dass Sie ein Problem haben. Um das richtige Formular zu finden:\n\n1. Welche Anwendung oder welches System ist betroffen? (z.B. ECHO, SAP, E-Mail, Laptop)\n2. Funktioniert es gar nicht oder teilweise?\n3. Wie viele Personen sind betroffen?",
+      hintNew: "Es klingt so, als m\u00f6chten Sie etwas Neues beantragen. Was f\u00fcr eine Anfrage ist es?\n\n1. Neue Software oder Zugang zu vorhandener Software\n2. Neue Hardware (Laptop, Monitor, etc.)\n3. Neues Mitarbeiterkonto\n4. Etwas anderes",
+      hintChange: "Sie m\u00f6chten etwas \u00e4ndern. Was muss ge\u00e4ndert werden?\n\n1. Ein Benutzerkonto\n2. Software- oder Anwendungseinstellungen\n3. Netzwerk- oder Infrastrukturkonfiguration\n4. Etwas anderes",
+      generic1: "Ich m\u00f6chte Ihnen helfen, das richtige Formular zu finden. K\u00f6nnten Sie Ihr Problem etwas genauer beschreiben? Zum Beispiel:\n\n; Welche Anwendung oder welches System betrifft es?\n; Ist etwas kaputt, oder brauchen Sie etwas Neues?\n; Brauchen Sie Zugang, eine \u00c4nderung, oder m\u00f6chten Sie ein Problem melden?",
+      generic2: "Ich bin mir noch nicht sicher, welches Formular Sie brauchen. Versuchen Sie:\n\n; \"Meine E-Mail funktioniert nicht\" (St\u00f6rung)\n; \"Ich brauche Zugang zu Foxit\" (Software)\n; \"Ich brauche einen neuen Laptop\" (Hardware)\n; \"Ich m\u00f6chte Phishing melden\" (Sicherheit)\n\nOder geben Sie einen bestimmten Anwendungsnamen ein wie SAP, ECHO, SharePoint, etc."
+    }
+  };
 
   var state = 'idle';
   var disambiguationOptions = [];
   var failedAttempts = 0;
+  var detectedLang = 'en';
 
   var chatArea = document.getElementById('chat-area');
   var userInput = document.getElementById('user-input');
   var sendBtn = document.getElementById('send-btn');
   var newRequestBtn = document.getElementById('new-request-btn');
 
-  addBotMessage(WELCOME);
+  function t(key) { return (LANG[detectedLang] || LANG.en)[key] || LANG.en[key]; }
+
+  function detectLanguage(input) {
+    var nlWords = ['ik','mijn','heb','nodig','kan','niet','het','een','voor','deze','graag','wil','zou','hebben','zijn','ook','maar','nog','wel','dit','dat','wat','hoe','waar','waarom','met','van','naar','bij','uit','over','aan','toe','terug','weer','heel','zeer','alles','iets','niets','werk','werkt','moet','geeft','heeft','staat','krijg','krijgt'];
+    var frWords = ['je','mon','ma','mes','ai','besoin','pour','une','cette','avoir','suis','est','sont','pas','avec','dans','sur','les','des','qui','que','mais','aussi','plus','peut','faire','comme','nous','vous','ils','elles','tout','rien','bien','mal','encore','quand','comment','pourquoi'];
+    var ptWords = ['eu','meu','minha','preciso','para','uma','esta','nao','com','tenho','pode','fazer','como','quando','porque','mais','tambem','ainda','muito','bem','mal','tudo','nada','aqui','onde','quero','queria','estou','esta','sao','ter','nos','eles','elas','isso','este','esta'];
+    var deWords = ['ich','mein','meine','brauche','kann','nicht','das','ein','eine','fur','diese','haben','sein','ist','sind','mit','von','nach','bei','aus','uber','auch','aber','noch','wie','was','wo','warum','muss','gibt','hat','steht','bekomme','alles','etwas','nichts','sehr','gut','schlecht','wieder','wenn','weil','oder','ganz','bitte','danke','mochte'];
+
+    var words = input.split(/\s+/);
+    var scores = { nl: 0, fr: 0, pt: 0, de: 0 };
+    words.forEach(function(w) {
+      if (nlWords.indexOf(w) !== -1) scores.nl++;
+      if (frWords.indexOf(w) !== -1) scores.fr++;
+      if (ptWords.indexOf(w) !== -1) scores.pt++;
+      if (deWords.indexOf(w) !== -1) scores.de++;
+    });
+    var best = 'en';
+    var bestScore = 0;
+    for (var lang in scores) {
+      if (scores[lang] > bestScore) { bestScore = scores[lang]; best = lang; }
+    }
+    return bestScore >= 1 ? best : detectedLang;
+  }
+
+  addBotMessage(t('welcome'));
 
   sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', function (e) {
@@ -556,8 +679,9 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     state = 'idle';
     disambiguationOptions = [];
     failedAttempts = 0;
+    detectedLang = 'en';
     chatArea.innerHTML = '';
-    addBotMessage(WELCOME);
+    addBotMessage(t('welcome'));
     userInput.value = '';
     userInput.style.height = 'auto';
     userInput.focus();
@@ -576,16 +700,19 @@ header { display: flex; align-items: center; justify-content: space-between; bac
   function processInput(raw) {
     var input = raw.toLowerCase().replace(/[^\w\s\/\-]/g, ' ').replace(/\s+/g, ' ').trim();
 
+    // Detect language from user input
+    detectedLang = detectLanguage(input);
+
     // Handle greetings
     if (/^(hi|hello|hey|good morning|good afternoon|good evening|hoi|hallo|goedemorgen|goedemiddag|goedenavond|bonjour|bonsoir|salut|bom dia|boa tarde|boa noite|ola|guten morgen|guten tag|guten abend|hallo|moin|servus|gruss gott)$/i.test(input)) {
       state = 'chatting';
-      addBotMessage("Hello! How can I help you today? Just describe what you need, for example: \"I need access to Foxit\", \"my laptop is broken\", or ask about SLA details.");
+      addBotMessage(t('greeting'));
       return;
     }
 
     // Handle thanks / goodbye
     if (/^(thanks|thank you|bye|goodbye|cheers|bedankt|dank je|dankjewel|tot ziens|doei|dag|merci|au revoir|salut|obrigado|obrigada|tchau|adeus|danke|tschuss|auf wiedersehen|vielen dank|dankeschon)$/i.test(input)) {
-      addBotMessage("You're welcome! Feel free to start a new request any time.");
+      addBotMessage(t('goodbye'));
       return;
     }
 
@@ -611,7 +738,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
         routeTo(filtered[0].form);
         return;
       }
-      addBotMessage("I didn't quite catch that. Please reply with a number (1 to " + disambiguationOptions.length + ") to select a form, or describe your request in more detail.");
+      addBotMessage(t('disambigRetry').replace('{n}', disambiguationOptions.length));
       return;
     }
 
@@ -623,7 +750,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     if (top.score === 0) {
       failedAttempts++;
       if (failedAttempts >= 3) {
-        addBotMessage("I'm having trouble finding the right form for you. Here's the general SSP portal where you can browse all available options.");
+        addBotMessage(t('fallback'));
         addCtaCard(GENERAL_SSP.name, GENERAL_SSP.desc, GENERAL_SSP.url, false);
         state = 'routed';
       } else {
@@ -640,13 +767,13 @@ header { display: flex; align-items: center; justify-content: space-between; bac
       // Show what we think it might be, but ask to confirm
       var guesses = scored.filter(function(s) { return s.score > 0; }).slice(0, 3);
       if (guesses.length === 1) {
-        addBotMessage("It sounds like you might need: \"" + guesses[0].form.name + "\". Is that correct? If not, could you tell me a bit more about what you're experiencing?");
+        addBotMessage(t('weakSingle').replace('{name}', guesses[0].form.name));
       } else if (guesses.length > 1) {
-        var msg = "I have a few ideas based on your description. Could you tell me which area this is about?\n\n";
+        var msg = t('weakMulti');
         guesses.forEach(function(g, i) {
           msg += (i + 1) + ". " + g.form.name + " (" + g.form.category + ")\n";
         });
-        msg += "\nOr describe your issue in a bit more detail and I'll find the right form.";
+        msg += t('weakMultiEnd');
         disambiguationOptions = guesses.map(function(g) { return g.form; });
         state = 'disambiguating';
         addBotMessage(msg);
@@ -667,42 +794,31 @@ header { display: flex; align-items: center; justify-content: space-between; bac
     disambiguationOptions = options.map(function (s) { return s.form; });
     state = 'disambiguating';
 
-    var msg = "I found a few forms that might match. Which one do you need?\n\n";
+    var msg = t('disambig');
     disambiguationOptions.forEach(function (f, i) {
       msg += (i + 1) + ". " + f.name + " (" + f.category + ")";
       if (f.restricted) msg += " [restricted]";
       msg += "\n";
     });
-    msg += "\nReply with the number of your choice.";
+    msg += t('disambigEnd');
     addBotMessage(msg);
   }
 
   function getFollowUpQuestion(input, attempt) {
-    // Detect broad category hints and ask targeted follow-ups
     var hints = [
-      { patterns: ['login','inlog','wachtwoord','password','mot de passe','senha','passwort','aanmelden','connecter','entrar','anmelden','toegang','acces','acesso','zugang'],
-        question: "I'd like to help! Could you tell me more?\n\n1. Is something broken or showing an error? (incident)\n2. Do you need access to a specific application?\n3. Do you need your password reset?\n4. Is your account blocked or locked?" },
-      { patterns: ['fout','error','erreur','erro','fehler','melding','message','probleem','probleme','problema','problem','werkt','marche','funciona','funktioniert','kapot','panne','kaputt'],
-        question: "I see you're having an issue. To find the right form, could you tell me:\n\n1. Which application or system is affected? (e.g. ECHO, SAP, email, laptop)\n2. Is it completely down or partially working?\n3. How many people are affected?" },
-      { patterns: ['nieuw','nouveau','novo','neu','new','aanvragen','demander','solicitar','beantragen','bestellen','commander','encomendar','bestellen'],
-        question: "It sounds like you want to request something new. What kind of request is it?\n\n1. New software or access to existing software\n2. New hardware (laptop, monitor, etc.)\n3. New employee account\n4. Something else" },
-      { patterns: ['wijzigen','changer','alterar','andern','change','modify','update','aanpassen','modifier','modificar','anpassen'],
-        question: "You'd like to change something. What needs to be changed?\n\n1. A user account\n2. Software or application settings\n3. Network or infrastructure configuration\n4. Something else" }
+      { patterns: ['login','inlog','wachtwoord','password','mot de passe','senha','passwort','aanmelden','connecter','entrar','anmelden','toegang','acces','acesso','zugang'], key: 'hintLogin' },
+      { patterns: ['fout','error','erreur','erro','fehler','melding','message','probleem','probleme','problema','problem','werkt','marche','funciona','funktioniert','kapot','panne','kaputt'], key: 'hintError' },
+      { patterns: ['nieuw','nouveau','novo','neu','new','aanvragen','demander','solicitar','beantragen','bestellen','commander','encomendar'], key: 'hintNew' },
+      { patterns: ['wijzigen','changer','alterar','andern','change','modify','update','aanpassen','modifier','modificar','anpassen'], key: 'hintChange' }
     ];
-
     for (var i = 0; i < hints.length; i++) {
       for (var j = 0; j < hints[i].patterns.length; j++) {
         if (input.indexOf(hints[i].patterns[j]) !== -1) {
-          return hints[i].question;
+          return t(hints[i].key);
         }
       }
     }
-
-    // Generic follow-up based on attempt number
-    if (attempt <= 1) {
-      return "I'd like to help you find the right form. Could you describe your issue in a bit more detail? For example:\n\n; What application or system is involved?\n; Is something broken, or do you need something new?\n; Do you need access, a change, or want to report a problem?";
-    }
-    return "I'm still not sure which form you need. Try one of these:\n\n; \"My email is not working\" (incident)\n; \"I need access to Foxit\" (software access)\n; \"I need a new laptop\" (hardware)\n; \"I want to report phishing\" (security)\n\nOr type a specific application name like SAP, ECHO, SharePoint, etc.";
+    return attempt <= 1 ? t('generic1') : t('generic2');
   }
 
   function checkSLA(input) {
@@ -756,7 +872,7 @@ header { display: flex; align-items: center; justify-content: space-between; bac
 
   function routeTo(form) {
     state = 'routed';
-    addBotMessage("Great, I've found the right form for you!");
+    addBotMessage(t('found'));
     addCtaCard(form.name, form.desc, form.url, form.restricted);
   }
 
